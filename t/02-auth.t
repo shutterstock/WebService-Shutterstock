@@ -14,7 +14,7 @@ can_ok $ss, 'auth';
 		is $_[0], '/auth/customer.json', 'POSTs to the correct URL';
 		like $_[1], qr{username=test}, 'inherits username from api_username';
 		like $_[1], qr{password=test-password}, 'password from param';
-		$ss->_client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
+		$ss->client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
 	});
 	$ss->auth('test-password');
 }
@@ -25,17 +25,17 @@ can_ok $ss, 'auth';
 		my $self = shift;
 		like $_[1], qr{username=someone_else}, 'username from param';
 		like $_[1], qr{password=test-password}, 'password from param';
-		$ss->_client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
+		$ss->client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
 	});
-	$ss->auth(someone_else => 'test-password');
-	is $ss->username, 'test123', 'successful auth - username';
-	is $ss->auth_token, 'abc123', 'successful auth - auth_token';
+	my $customer = $ss->auth(someone_else => 'test-password');
+	is $customer->username, 'test123', 'successful auth - username';
+	is $customer->auth_token, 'abc123', 'successful auth - auth_token';
 }
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
 	$guard->mock('POST', sub {
-		$ss->_client->{_res} = response(401);
+		$ss->client->{_res} = response(401);
 	});
 	eval { $ss->auth(someone_else => 'test-password') };
 	like $@, qr{invalid api}, 'invalid api authorization';
@@ -44,7 +44,7 @@ can_ok $ss, 'auth';
 {
 	my $guard = Test::MockModule->new('REST::Client');
 	$guard->mock('POST', sub {
-		$ss->_client->{_res} = response([403],['POST','/auth/customer.json']);
+		$ss->client->{_res} = response([403],['POST','/auth/customer.json']);
 	});
 	eval { $ss->auth(someone_else => 'test-password') };
 	like $@, qr{403 Forbidden}, 'invalid username/password';

@@ -12,6 +12,8 @@ use MIME::Base64;
 use JSON qw(encode_json decode_json);
 use WWW::Shutterstock::Lightbox;
 use WWW::Shutterstock::Client;
+use WWW::Shutterstock::Customer;
+use WWW::Shutterstock::SearchResults;
 
 has api_username => (
 	is => 'ro',
@@ -21,25 +23,17 @@ has api_key => (
 	is => 'ro',
 	required => 1,
 );
-has username => (
-	is => 'rwp',
-	init_arg => 'undef',
-);
-has auth_token => (
-	is => 'rwp',
-	init_arg => 'undef',
-);
 has client_config => (
 	is => 'ro',
 	isa => sub { croak "client_config must be a HashRef" unless ref $_[0] eq 'HASH'; },
 );
 
-has _client => (
+has client => (
 	is       => 'lazy',
 	clearer  => 1,
 );
 
-sub _build__client {
+sub _build_client {
 	my $self = shift;
 	my $config = $self->client_config || {};
 	my $client = WWW::Shutterstock::Client->new(
@@ -57,72 +51,101 @@ sub _build__client {
 	return $client;
 }
 
+=method new( api_username => $api_username, api_key => $api_key )
+
+Constructor method, requires both the C<api_username> and C<api_key> parameters be passed in.
+
+=cut
+
+=method auth($username, $password)
+
+Authenticate for a specific customer account.  Returns a L<WWW::Shutterstock::Customer> object.
+
+=cut
+
 sub auth {
 	my $self = shift;
 	my $password = pop;
 	my $username = pop || $self->api_username;
-	$self->_client->POST(
+	$self->client->POST(
 		'/auth/customer.json',
 		{
 			username => $username,
 			password => $password
 		}
 	);
-	my $auth_info = $self->_handle_response;
+	my $auth_info = $self->client->process_response;
 	if(ref($auth_info) eq 'HASH'){
-		$self->_set_username( $auth_info->{username} );
-		$self->_set_auth_token( $auth_info->{auth_token} );
+		return WWW::Shutterstock::Customer->new( auth_info => $auth_info, client => $self->client );;
+	} else {
+		return $auth_info;
 	}
-	return $auth_info;
 }
 
-sub require_auth {
-	my $self = shift;
-	if(!$self->username || !$self->auth_token){
-		croak 'not authenticated yet, please call $ss->auth($username => $password) first.'
-	}
-}
+=method categories
+
+Returns a list of photo categories (useful for specifying a category_id when searching).
+
+=cut
 
 sub categories {
 	my $self = shift;
-	$self->_client->GET('/categories.json');
-	return $self->_handle_response;
+	$self->client->GET('/categories.json');
+	return $self->client->process_response;
 }
 
-sub lightboxes {
+=method search(%search_query)
+
+Perform a search.  Accepts any params documented here: L<http://api.shutterstock.com/#imagessearch>.  Returns a L<WWW::Shutterstock::SearchResults> object.
+
+=cut
+
+sub search {
 	my $self = shift;
-	$self->require_auth;
-	$self->_client->GET(
-		sprintf( '/customers/%s/lightboxes.json', $self->username ),
-		{ auth_token => $self->auth_token } );
-	my $lightboxes = $self->_handle_response;
-	return [ map { WWW::Shutterstock::Lightbox->new( %$_, ss => $self ) } @$lightboxes ];
+	my %args = @_;
+	return WWW::Shutterstock::SearchResults->new( client => $self->client, query => \%args );
 }
 
-sub _handle_response {
+=method image($image_id)
+
+Performs a lookup on a single image.  Returns a L<WWW::Shutterstock::Image> object.
+
+=cut
+
+sub image {
 	my $self = shift;
-	my %handlers = (
-		204 => sub { 1 }, # empty response, but success
-		401 => sub { croak "invalid api_username or api_key"; },
-		@_
-	);
-	my $code = $self->_client->responseCode;
-	my $content_type = $self->_client->responseHeader('Content-Type');
-
-	my $response = $self->_client->{_res}; # blech, why isn't this public?
-	my $request = $response->request;
-
-	if(my $h = $handlers{$code}){
-		$h->($response);
-	} elsif($code <= 299){ # a success
-		return $content_type =~ m{^application/json} && $self->_client->responseContent ? decode_json($self->_client->responseContent) : $response->decoded_content;
-	} elsif($code <= 399){ # a redirect of some sort
-		return $self->_client->responseHeader('Location');
-	} elsif($code <= 499){ # client-side error
-		croak sprintf('Error executing %s against %s: %s', $request->method, $request->uri, $response->status_line);
-	} elsif($code >= 500){ # server-side error
-		croak sprintf('Error executing %s against %s: %s', $request->method, $request->uri, $response->status_line);
-	}
+	my $image_id = shift;
+	return WWW::Shutterstock::Image->new( image_id => $image_id, client => $self->client );
 }
 
 1;
+
+=head1 SYNOPSIS
+
+	my $ss = WWW::Shutterstock->new(
+		api_username => 'justme',
+		api_key      => 'abcdef1234567890'
+	);
+
+	# perform a search
+	my $search = $ss->search( searchterm => 'blue cow' );
+
+	# retrieve results of search
+	my $results = $search->results;
+
+	# details about a specific image (lookup by ID)
+	my $image = $ss->image(123456789);
+
+	# certain actions require credentials for a specific customer account
+	my $account = $ss->auth( "myuser" => "mypassword" );
+
+	my $media_subscription = $account->subscription('media');
+	my $license = $media_subscription->license_image('123456789');
+
+	# save the file locally as /my/photos/shutterstock_123456789.jpg
+	$license->save("/my/photos");
+
+	# save the file locally as /my/photos/favorite-pic.jpg
+	$license->save("/my/photos/favorite-pic.jpg");
+
+=cut

@@ -12,7 +12,13 @@ can_ok $ss, 'categories';
 	$guard->mock('GET', sub {
 		my $self = shift;
 		is $_[0], '/categories.json', 'GETs correct URL';
-		$ss->_client->{_res} = response(200, ['Content-Type' => 'application/json'], '[{"category_id":"0","category_name":"Transportation"},{"category_id":"1","category_name":"Animals/Wildlife"}]');
+		$ss->client->response(
+			response(
+				200,
+				[ 'Content-Type' => 'application/json' ],
+				'[{"category_id":"0","category_name":"Transportation"},{"category_id":"1","category_name":"Animals/Wildlife"}]'
+			)
+		);
 	});
 	my $categories = $ss->categories;
 	is $categories->[1]->{category_id}, 1, 'returns correct data';

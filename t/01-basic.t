@@ -7,7 +7,7 @@ use Test::MockModule;
 my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123, client_config => {timeout => 60});
 isa_ok($ss, 'WWW::Shutterstock');
 
-can_ok $ss, '_client';
+can_ok $ss, 'client';
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
@@ -18,8 +18,7 @@ can_ok $ss, '_client';
 		is $args{timeout}, 60, 'passed in timeout value';
 		return $guard->original('new')->($class, @_);
 	});
-	ok $ss->_client, 'client initialized';
-	$ss->_clear_client;
+	ok $ss->client, 'client initialized';
 }
 
 done_testing;

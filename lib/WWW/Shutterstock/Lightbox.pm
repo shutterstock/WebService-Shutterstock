@@ -6,52 +6,66 @@ use strict;
 use version;
 use Moo;
 use WWW::Shutterstock::Image;
+use WWW::Shutterstock::DeferredData qw(deferred);
 
-has ss => ( is => 'rw', weak_ref => 1 );
+with 'WWW::Shutterstock::AuthedClient';
+
+deferred(
+	['lightbox_name' => 'name', 'rw'],
+	['images' => '_images', 'ro'],
+	sub {
+		my $self = shift;
+		my $client = $self->client;
+		$client->GET( sprintf('/lightboxes/%s/extended.json', $self->id), $self->with_auth_params );
+		return $client->process_response;
+	}
+);
 
 has id => ( is => 'rw', init_arg => 'lightbox_id' );
-has name => ( is => 'rw', init_arg => 'lightbox_name' );
-has _images => ( is => 'rw', init_arg => 'images' );
+has public_url => ( is => 'lazy' );
+
+sub _build_public_url {
+	my $self = shift;
+	my $client = $self->client;
+	$client->GET( sprintf( '/lightboxes/%s/public_url.json', $self->id ), $self->with_auth_params );
+	if(my $data = $client->process_response){
+		return $data->{public_url};
+	}
+	return;
+}
 
 sub delete_image {
 	my $self = shift;
 	my $image_id = shift;
-	my $client = $self->ss->_client;
-	$self->ss->require_auth;
+	my $client = $self->client;
 	$client->DELETE(
-		sprintf(
-			'/lightboxes/%s/images/%s?%s',
-			$self->id,
-			$image_id,
-			$client->buildQuery(
-				username   => $self->ss->username,
-				auth_token => $self->ss->auth_token
-			)
-		)
+		sprintf( '/lightboxes/%s/images/%s.json', $self->id, $image_id ),
+		$self->with_auth_params( username => $self->username )
 	);
+	return $client->process_response;
 }
 
 sub add_image {
 	my $self = shift;
 	my $image_id = shift;
-	my $client = $self->ss->_client;
-	$self->ss->require_auth;
+	my $client = $self->client;
 	$client->PUT(
 		sprintf(
-			'/lightboxes/%s/images/%s?%s',
+			'/lightboxes/%s/images/%s.json?%s',
 			$self->id,
 			$image_id,
 			$client->buildQuery(
-				username   => $self->ss->username,
-				auth_token => $self->ss->auth_token
+				username   => $self->username,
+				auth_token => $self->auth_token
 			)
 		)
 	);
+	return $client->process_response;
 }
 
 sub images {
 	my $self = shift;
-	return [ map { WWW::Shutterstock::Image->new( %$_, ss => $self->ss ) } @{ $self->_images || [] } ];
+	return [ map { $self->new_with_auth('WWW::Shutterstock::Image', %$_ ) } @{ $self->_images || [] } ];
 }
 
 1;
