@@ -43,6 +43,19 @@ can_ok $customer, 'lightboxes';
 	$lightboxes->[0]->delete_image(123);
 }
 
+{
+	my $guard = Test::MockModule->new('REST::Client');
+	$guard->mock('GET', sub {
+		my($self, $url) = @_;
+		like $url, qr'/customers/abc/lightboxes.json\?', 'correct URL (not extended)';
+		return $self->response(response(200, '[{"lightbox_id":1,"lightbox_name":"test","images":[{"image_id":1,"sizes":{"huge":{"height":100,"width":100}}}]},{"lightbox_id":2, "lightbox_name":"test 2","images":[{"image_id":2}]}]'));
+	});
+	$customer->lightboxes;
+}
+
+my $lightbox = $customer->lightbox(1);
+isa_ok $lightbox, 'WWW::Shutterstock::Lightbox';
+
 done_testing;
 
 sub response {

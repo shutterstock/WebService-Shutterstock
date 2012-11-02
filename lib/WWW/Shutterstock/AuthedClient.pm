@@ -1,5 +1,7 @@
 package WWW::Shutterstock::AuthedClient;
 
+# ABSTRACT: Role comprising a REST client with the necessary auth token information
+
 use strict;
 use warnings;
 use Moo::Role;

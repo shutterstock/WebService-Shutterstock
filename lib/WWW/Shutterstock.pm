@@ -78,7 +78,7 @@ sub auth {
 	if(ref($auth_info) eq 'HASH'){
 		return WWW::Shutterstock::Customer->new( auth_info => $auth_info, client => $self->client );;
 	} else {
-		return $auth_info;
+		croak "Error authenticating $username: $auth_info";
 	}
 }
 

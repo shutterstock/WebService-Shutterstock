@@ -19,6 +19,10 @@ sub _build__results_data {
 	return $client->process_response;
 }
 
+sub page        { return shift->_results_data->{page} }
+sub count       { return shift->_results_data->{count} }
+sub sort_method { return shift->_results_data->{sort_method} }
+
 sub results {
 	my $self = shift;
 	return [

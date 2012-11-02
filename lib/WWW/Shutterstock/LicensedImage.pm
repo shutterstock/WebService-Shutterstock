@@ -3,7 +3,7 @@ package WWW::Shutterstock::LicensedImage;
 use strict;
 use warnings;
 use Moo;
-use LWP::Simple qw(getstore);
+use LWP::Simple;
 
 my @attrs = qw(photo_id thumb_large allotment_charge download_url);
 foreach my $attr(@attrs){
@@ -26,7 +26,7 @@ sub save {
 		my($basename) = $url =~ m{.+/(.+)};
 		$destination .= "/$basename";
 	}
-	return getstore($url, $destination);
+	return LWP::Simple::getstore($url, $destination);
 }
 
 1;

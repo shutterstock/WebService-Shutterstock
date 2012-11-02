@@ -50,7 +50,90 @@ sub similar {
 	my $client = $self->client;
 	$client->GET(sprintf('/images/%s/similar.json', $self->id));
 	my $images = $client->process_response;
-	return [ map { $self->new_with_auth( 'WWW::Shutterstock::Image', %$_ ) } @$images ];
+	return [ map { $self->new_with_client( 'WWW::Shutterstock::Image', %$_ ) } @$images ];
 }
 
 1;
+
+=head1 SYNOPSIS
+
+	my $image = $ss->image(123456789);
+	printf "Image %d (%dx%d) - %s\n", $image->id, $image->size('huge')->{width},
+	  $image->size('huge')->{height}, $image->description;
+	print "Categories:\n";
+	foreach my $category ( @{ $image->categories } ) {
+		printf " - %s (%d)\n", $category->{category}, $category->{category_id};
+	}
+
+=head1 DESCRIPTION
+
+This module serves as a proxy class for the data returned from a URL
+like L<http://api.shutterstock.com/images/15484942.json>.  Please look
+at that data structure for a better idea of exactly what each of the methods
+in this class returns.
+
+=method categories
+
+ArrayRef of category names and IDs.
+
+=method description
+
+=method enhanced_license_available
+
+Boolean
+
+=method illustration
+
+Boolean
+
+=method is_vector
+
+Boolean
+
+=method keywords
+
+ArrayRef of keywords.
+
+=method model_release
+
+Details regarding
+
+=method r_rated
+
+Boolean
+
+=method similar
+
+Returns an ArrayRef of L<WWW::Shutterstock::Image> objects similar to
+the current image.
+
+=cut
+
+=method sizes
+
+Returns a HashRef of information about the various sizes for the image.
+
+=method size
+
+Returns details for a specific size.  Some sizes provide just dimensions
+(small, medium, large). Other sizes include a URL for the image as well
+(thumb_small, thumb_large).
+
+=method submitter
+
+Name of the individual who submitted the image to Shutterstock.
+
+=method submitter_id
+
+ID of the submitter.
+
+=method vector_type
+
+For a JPG image, this is C<undef>.  For a vector image, this would be a value like C<"eps">.
+
+=method web_url
+
+A URL for the main page on Shutterstock's site for this image.
+
+=cut
+

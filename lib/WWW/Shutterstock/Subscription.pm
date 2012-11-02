@@ -8,7 +8,7 @@ use WWW::Shutterstock::LicensedImage;
 
 with 'WWW::Shutterstock::AuthedClient';
 
-has id => ( is => 'ro', init_arg => 'subscription_id' );
+has id => ( is => 'ro', required => 1, init_arg => 'subscription_id' );
 my @fields = qw(
 	  unix_expiration_time
 	  current_allotment
@@ -26,7 +26,7 @@ sub license_image {
 	my $self     = shift;
 	my $image_id = shift;
 	my $size     = shift;
-	my $metadata = shift || {};
+	my $metadata = shift || {purchase_order => '', job => '', client => '', other => ''};
 	my $format   = $size eq 'vector' ? 'eps' : 'jpg';
 	my $client   = $self->client;
 	$client->POST(

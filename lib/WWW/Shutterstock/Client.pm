@@ -69,7 +69,7 @@ sub process_response {
 	);
 
 	my $code = $self->responseCode;
-	my $content_type = $self->responseHeader('Content-Type');
+	my $content_type = $self->responseHeader('Content-Type') || '';
 
 	my $response = $self->{_res}; # blech, why isn't this public?
 	my $request = $response->request;
@@ -77,6 +77,7 @@ sub process_response {
 	if(my $h = $handlers{$code}){
 		$h->($response);
 	} elsif($code <= 299){ # a success
+		$DB::single=1 if $content_type eq '';
 		return $content_type =~ m{^application/json} && $self->responseContent ? decode_json($self->responseContent) : $response->decoded_content;
 	} elsif($code <= 399){ # a redirect of some sort
 		return $self->responseHeader('Location');

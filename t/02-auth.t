@@ -50,6 +50,15 @@ can_ok $ss, 'auth';
 	like $@, qr{403 Forbidden}, 'invalid username/password';
 }
 
+{
+	my $guard = Test::MockModule->new('REST::Client');
+	$guard->mock('POST', sub {
+		$ss->client->{_res} = response([200, undef, 'garbage'],['POST','/auth/customer.json']);
+	});
+	eval { $ss->auth(someone_else => 'test-password') };
+	like $@, qr{garbage}, 'has error';
+}
+
 done_testing;
 
 sub response {
