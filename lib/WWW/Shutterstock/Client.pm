@@ -1,5 +1,7 @@
 package WWW::Shutterstock::Client;
 
+# ABSTRACT: Provides easy REST interactions with the Shutterstock API
+
 use strict;
 use warnings;
 use Moo;
@@ -7,6 +9,12 @@ use Carp qw(croak);
 use JSON qw(decode_json);
 
 extends 'REST::Client';
+
+=method response
+
+Returns most recent response object.
+
+=cut
 
 sub response {
 	my $self = shift;
@@ -60,6 +68,14 @@ sub POST {
 	return $self->response;
 }
 
+=method process_response(201 => \&created_handler, 404 => \&notfound_handler)
+
+Processes the most recent response object based on the HTTP status code,
+the content type and response body.  Additional handlers may be passed in
+(keyed on HTTP status codes).
+
+=cut
+
 sub process_response {
 	my $self = shift;
 	my %handlers = (
@@ -89,3 +105,12 @@ sub process_response {
 }
 
 1;
+
+=head1 DESCRIPTION
+
+This class extends the L<REST::Client> class and provides some additional
+convenience functions.
+
+You should not need to use this class to use L<WWW::Shutterstock>
+
+=cut

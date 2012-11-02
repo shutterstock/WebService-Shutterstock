@@ -1,5 +1,7 @@
 package WWW::Shutterstock::DeferredData;
 
+# ABSTRACT: Utility class for easy lazy-loading from the API
+
 use strict;
 use warnings;
 use Sub::Exporter -setup => { exports => ['deferred'] };
@@ -60,5 +62,14 @@ sub deferred {
 	};
 }
 
-
 1;
+
+=head1 DESCRIPTION
+
+This utility class simply enables us to load some fields in a lazy fashion.
+
+You should not need to use this class in order to use L<WWW::Shutterstock>.
+
+=for Pod::Coverage deferred
+
+=cut

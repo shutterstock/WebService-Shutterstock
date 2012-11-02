@@ -9,6 +9,12 @@ use WWW::Shutterstock::Subscription;
 
 with 'WWW::Shutterstock::AuthedClient';
 
+=method account_id
+
+Retrieves the account ID for this account.
+
+=cut
+
 has account_id => ( is => 'lazy' );
 sub _build_account_id {
 	my $self = shift;
@@ -97,3 +103,25 @@ sub downloads {
 }
 
 1;
+
+=head1 SYNOPSIS
+
+	my $customer = $ss->auth("my-user" => "my-password");
+
+	# retrieve list of lightboxes
+	my $lightboxes = $customer->ligthboxes;
+
+	# retrieve a specific lightbox for this user
+	my $lightbox = $customer->lightbox(123);
+
+	my $subscriptions = $customer->subscriptions;
+	my $premier_subscription = $customer->subscription('premier');
+
+	my $download_history = $customer->downloads;
+
+=head1 DESCRIPTION
+
+This class provides access to API operations (download history, lightbox interaction, subscriptions, etc) that require an authenticated
+customer (via L<WWW::Shutterstock/"auth">).
+
+=cut

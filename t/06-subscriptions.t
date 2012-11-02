@@ -50,12 +50,13 @@ can_ok $customer, 'subscriptions';
 	});
 
 	my $image = $customer->subscription('premier_digital')->license_image(1 => 'medium', { key => 'value' });
-	my $lwp = Test::MockModule->new('LWP::Simple');
+	my $lwp = Test::MockModule->new('LWP::UserAgent');
 	my $desired_dest;
-	$lwp->mock('getstore', sub ($$) {
-		my($url, $dest) = @_;
-		is $url, 'http://download.shutterstock.com/gatekeeper/testing/shutterstock_1.jpg', 'has correct download URL';
+	$lwp->mock('request', sub {
+		my($self, $request, $dest) = @_;
+		is $request->uri, 'http://download.shutterstock.com/gatekeeper/testing/shutterstock_1.jpg', 'has correct download URL';
 		is $dest, $desired_dest, 'has correct destination';
+		return response( 200 );
 	});
 	$image->save($desired_dest = '/tmp/foo');
 	$desired_dest = './shutterstock_1.jpg';

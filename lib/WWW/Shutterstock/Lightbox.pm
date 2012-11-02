@@ -1,6 +1,6 @@
 package WWW::Shutterstock::Lightbox;
 
-# ABSTRACT: Representation of lightbox in Shutterstock's public API
+# ABSTRACT: Representation of a lightbox in Shutterstock's public API
 
 use strict;
 use version;
@@ -21,6 +21,20 @@ deferred(
 	}
 );
 
+=attr id
+
+The ID of this lightbox
+
+=attr name
+
+The name of this lightbox
+
+=attr public_url
+
+Returns a URL for access this lightbox without authenticating.
+
+=cut
+
 has id => ( is => 'rw', init_arg => 'lightbox_id' );
 has public_url => ( is => 'lazy' );
 
@@ -34,6 +48,12 @@ sub _build_public_url {
 	return;
 }
 
+=method delete_image
+
+Removes an image from this lightbox.
+
+=cut
+
 sub delete_image {
 	my $self = shift;
 	my $image_id = shift;
@@ -44,6 +64,12 @@ sub delete_image {
 	);
 	return $client->process_response;
 }
+
+=method add_image($id)
+
+Adds an image to this lightbox.
+
+=cut
 
 sub add_image {
 	my $self = shift;
@@ -62,6 +88,12 @@ sub add_image {
 	);
 	return $client->process_response;
 }
+
+=attr images
+
+Returns a list of L<WWW::Shutterstock::Image> objects that are in this lightbox.
+
+=cut
 
 sub images {
 	my $self = shift;

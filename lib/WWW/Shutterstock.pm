@@ -23,11 +23,6 @@ has api_key => (
 	is => 'ro',
 	required => 1,
 );
-has client_config => (
-	is => 'ro',
-	isa => sub { croak "client_config must be a HashRef" unless ref $_[0] eq 'HASH'; },
-);
-
 has client => (
 	is       => 'lazy',
 	clearer  => 1,
@@ -35,11 +30,7 @@ has client => (
 
 sub _build_client {
 	my $self = shift;
-	my $config = $self->client_config || {};
-	my $client = WWW::Shutterstock::Client->new(
-		host => 'http://api.shutterstock.com',
-		%$config
-	);
+	my $client = WWW::Shutterstock::Client->new( host => 'http://api.shutterstock.com' );
 	$client->addHeader(
 		Authorization => sprintf(
 			'Basic %s',
