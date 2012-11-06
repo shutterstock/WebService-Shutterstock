@@ -19,7 +19,11 @@ A HashRef of the arguments used to perform the search.
 
 =cut
 
-has query => ( is => 'ro', required => 1, isa => sub { die "query must be a HashRef" unless ref $_[0] eq 'HASH' } );
+has query => (
+	is       => 'ro',
+	required => 1,
+	isa      => sub { die "query must be a HashRef" unless ref $_[0] eq 'HASH' }
+);
 has _results_data => ( is => 'lazy' );
 
 sub _build__results_data {

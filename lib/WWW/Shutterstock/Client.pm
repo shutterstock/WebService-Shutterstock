@@ -5,8 +5,8 @@ package WWW::Shutterstock::Client;
 use strict;
 use warnings;
 use Moo;
-use Carp qw(croak);
 use JSON qw(decode_json);
+use WWW::Shutterstock::Exception;
 
 extends 'REST::Client';
 
@@ -80,7 +80,7 @@ sub process_response {
 	my $self = shift;
 	my %handlers = (
 		204 => sub { 1 }, # empty response, but success
-		401 => sub { croak "invalid api_username or api_key"; },
+		401 => sub { die WWW::Shutterstock::Exception->new(response => shift, error => "invalid api_username or api_key"); },
 		@_
 	);
 
@@ -93,14 +93,13 @@ sub process_response {
 	if(my $h = $handlers{$code}){
 		$h->($response);
 	} elsif($code <= 299){ # a success
-		$DB::single=1 if $content_type eq '';
 		return $content_type =~ m{^application/json} && $self->responseContent ? decode_json($self->responseContent) : $response->decoded_content;
 	} elsif($code <= 399){ # a redirect of some sort
 		return $self->responseHeader('Location');
 	} elsif($code <= 499){ # client-side error
-		croak sprintf("Error executing %s against %s: %s\n%s", $request->method, $request->uri, $response->status_line, $response->as_string);
+		die WWW::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
 	} elsif($code >= 500){ # server-side error
-		croak sprintf("Error executing %s against %s: %s\n%s", $request->method, $request->uri, $response->status_line, $response->as_string);
+		die WWW::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
 	}
 }
 

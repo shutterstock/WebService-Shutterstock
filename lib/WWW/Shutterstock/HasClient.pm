@@ -6,6 +6,12 @@ use strict;
 use warnings;
 use Moo::Role;
 
+=attr client
+
+The L<WWW::Shutterstock::Client> object contained within
+
+=cut
+
 has client => ( is => 'ro', required => 1 );
 
 =method new_with_client

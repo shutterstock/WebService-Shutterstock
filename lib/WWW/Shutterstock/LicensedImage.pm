@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Moo;
 use LWP::Simple;
+use WWW::Shutterstock::Exception;
 
 my @attrs = qw(photo_id thumb_large_url allotment_charge download_url);
 foreach my $attr(@attrs){
@@ -52,14 +53,19 @@ sub save {
 		$destination .= "/$basename";
 	}
 	my $ua = LWP::UserAgent->new;
-	$DB::single=1;
 	my $response = $ua->get($url, ':content_file' => $destination);
 	if(my $died = $response->header('X-Died') ){
-		die "Unable to save image to $destination: $died";
+		die WWW::Shutterstock::Exception->new(
+			response => $response,
+			error    => "Unable to save image to $destination: $died"
+		);
 	} elsif($response->code == 200){
 		return $destination;
 	} else {
-		die "Unable to retrieve image: " . $response->status_line;
+		die WWW::Shutterstock::Exception->new(
+			response => $response,
+			error    => $response->status_line . ": unable to retrieve image",
+		);
 	}
 }
 

@@ -5,7 +5,6 @@ package WWW::Shutterstock;
 use strict;
 use warnings;
 
-use Carp qw(croak);
 use Moo 1;
 use REST::Client;
 use MIME::Base64;
@@ -14,6 +13,7 @@ use WWW::Shutterstock::Lightbox;
 use WWW::Shutterstock::Client;
 use WWW::Shutterstock::Customer;
 use WWW::Shutterstock::SearchResults;
+use WWW::Shutterstock::Exception;
 
 has api_username => (
 	is => 'ro',
@@ -50,7 +50,10 @@ Constructor method, requires both the C<api_username> and C<api_key> parameters 
 
 =method auth($username, $password)
 
-Authenticate for a specific customer account.  Returns a L<WWW::Shutterstock::Customer> object.
+Authenticate for a specific customer account.  Returns a
+L<WWW::Shutterstock::Customer> object.  If authentication fails, an
+exception is thrown (see L<WWW::Shutterstock::Exception> and L</"ERRORS">
+section for more information).
 
 =cut
 
@@ -69,7 +72,10 @@ sub auth {
 	if(ref($auth_info) eq 'HASH'){
 		return WWW::Shutterstock::Customer->new( auth_info => $auth_info, client => $self->client );;
 	} else {
-		croak "Error authenticating $username: $auth_info";
+		die WWW::Shutterstock::Exception->new(
+			response => $self->client->response,
+			error    => "Error authenticating $username: $auth_info"
+		);
 	}
 }
 
@@ -99,14 +105,15 @@ sub search {
 
 =method image($image_id)
 
-Performs a lookup on a single image.  Returns a L<WWW::Shutterstock::Image> object.
+Performs a lookup on a single image.  Returns a L<WWW::Shutterstock::Image> object (or C<undef> if the image doesn't exist).
 
 =cut
 
 sub image {
 	my $self = shift;
 	my $image_id = shift;
-	return WWW::Shutterstock::Image->new( image_id => $image_id, client => $self->client );
+	my $image = WWW::Shutterstock::Image->new( image_id => $image_id, client => $self->client );
+	return $image->is_available ? $image : undef;
 }
 
 1;
@@ -130,6 +137,9 @@ sub image {
 	# certain actions require credentials for a specific customer account
 	my $account = $ss->auth( "myuser" => "mypassword" );
 
+	# history of downloaded images across all subscriptions
+	my $history = $account->downloads;
+
 	my $media_subscription = $account->subscription('media');
 	my $license = $media_subscription->license_image('123456789');
 
@@ -138,5 +148,18 @@ sub image {
 
 	# save the file locally as /my/photos/favorite-pic.jpg
 	$license->save("/my/photos/favorite-pic.jpg");
+
+=head1 DESCRIPTION
+
+This module provides an easy way to interact with the L<Shutterstock, Inc. API|http://api.shutterstock.com>.
+You will need an API username and key from Shutterstock with the
+appropriate permissions in order to use this module.
+
+=head1 ERRORS
+
+In the event of an unexpected error, this module will die with a
+L<WWW::Shutterstock::Exception> object.  This object should have the
+necessary information for you to diagnose what exactly went wrong
+(including the full request and response objects that preceded the error).
 
 =cut

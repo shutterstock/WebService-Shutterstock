@@ -38,7 +38,7 @@ sub deferred {
 		my @src  = map { ref $_ ? $_->[0] : $_ } @fields;
 		my @dst  = map { ref $_ ? $_->[1] : $_ } @fields;
 		@{$self}{@dst} = @{$data}{@src};
-		return;
+		return $self;
 	};
 	my $constructor_target = $target . '::new';
 	my $original = \&{ $constructor_target };

@@ -10,6 +10,12 @@ use WWW::Shutterstock::DeferredData qw(deferred);
 
 with 'WWW::Shutterstock::HasClient';
 
+=attr id
+
+The ID of this image on the Shutterstock system
+
+=cut
+
 has id => ( is => 'ro', required => 1, init_arg => 'image_id' );
 
 deferred(
