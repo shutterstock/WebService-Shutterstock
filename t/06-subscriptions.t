@@ -32,7 +32,11 @@ can_ok $customer, 'subscriptions';
 	is $subscriptions->[0]->id, 1, 'has correct data';
 	ok $subscriptions->[0]->is_expired, 'is_expired';
 	ok !$subscriptions->[0]->is_active, 'is_active';
-	is $customer->subscription('premier_digital')->id, 2, 'license lookup for subscription';
+	is $customer->subscription(license => 'premier_digital')->id, 2, 'license lookup for subscription';
+	is $customer->find_subscriptions(license => qr{^premier}), 2, 'all premier licenses returned';
+	is $customer->find_subscriptions(license => sub { 0 }), 0, 'callback filter';
+	ok !eval {$customer->find_subscriptions(bogus => 'blah'); 1}, 'dies OK';
+	like $@, qr{bogus}, 'errors informatively';
 
 	$guard->mock('POST', sub {
 		my($self, $url, $content) = @_;
@@ -49,7 +53,7 @@ can_ok $customer, 'subscriptions';
 		);
 	});
 
-	my $image = $customer->subscription('premier_digital')->license_image(1 => 'medium', { key => 'value' });
+	my $image = $customer->subscription(license => 'premier_digital')->license_image(1 => 'medium', { key => 'value' });
 	my $lwp = Test::MockModule->new('LWP::UserAgent');
 	my $desired_dest;
 	$lwp->mock('request', sub {

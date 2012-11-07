@@ -14,7 +14,7 @@ can_ok $ss, 'client';
 	$guard->mock('new', sub {
 		my $class = shift;
 		my %args = @_;
-		is $args{host}, 'http://api.shutterstock.com', 'default host';
+		is $args{host}, 'https://api.shutterstock.com', 'default host';
 		return $guard->original('new')->($class, @_);
 	});
 	ok $ss->client, 'client initialized';

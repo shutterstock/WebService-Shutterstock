@@ -48,7 +48,7 @@ Constructor method, requires both the C<api_username> and C<api_key> parameters 
 
 =cut
 
-=method auth($username, $password)
+=method auth(username => $username, password => $password)
 
 Authenticate for a specific customer account.  Returns a
 L<WWW::Shutterstock::Customer> object.  If authentication fails, an
@@ -59,13 +59,13 @@ section for more information).
 
 sub auth {
 	my $self = shift;
-	my $password = pop;
-	my $username = pop || $self->api_username;
+	my %args = @_;
+	$args{username} ||= $self->api_username;
 	$self->client->POST(
 		'/auth/customer.json',
 		{
-			username => $username,
-			password => $password
+			username => $args{username},
+			password => $args{password}
 		}
 	);
 	my $auth_info = $self->client->process_response;
@@ -74,7 +74,7 @@ sub auth {
 	} else {
 		die WWW::Shutterstock::Exception->new(
 			response => $self->client->response,
-			error    => "Error authenticating $username: $auth_info"
+			error    => "Error authenticating $args{username}: $auth_info"
 		);
 	}
 }
@@ -155,11 +155,13 @@ This module provides an easy way to interact with the L<Shutterstock, Inc. API|h
 You will need an API username and key from Shutterstock with the
 appropriate permissions in order to use this module.
 
-=head1 ERRORS
+=head3 Errors
 
-In the event of an unexpected error, this module will die with a
-L<WWW::Shutterstock::Exception> object.  This object should have the
-necessary information for you to diagnose what exactly went wrong
-(including the full request and response objects that preceded the error).
+If you provide an invalid C<api_username> or C<api_key>, the first request
+executed will die with a L<WWW::Shutterstock::Exception> object.
+This exception object should have the necessary information for you to
+diagnose what exactly went wrong (including the full request and response
+objects that preceded the error).  L<WWW::Shutterstock::Exception> objects
+will be thrown on unexpected errors as well.
 
 =cut

@@ -16,7 +16,7 @@ can_ok $ss, 'auth';
 		like $_[1], qr{password=test-password}, 'password from param';
 		$ss->client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
 	});
-	$ss->auth('test-password');
+	$ss->auth(password => 'test-password');
 }
 
 {
@@ -27,7 +27,7 @@ can_ok $ss, 'auth';
 		like $_[1], qr{password=test-password}, 'password from param';
 		$ss->client->{_res} = response(200, ['Content-Type' => 'application/json'], '{"auth_token":"abc123","username":"test123"}');
 	});
-	my $customer = $ss->auth(someone_else => 'test-password');
+	my $customer = $ss->auth(username => 'someone_else', password => 'test-password');
 	is $customer->username, 'test123', 'successful auth - username';
 	is $customer->auth_token, 'abc123', 'successful auth - auth_token';
 }
@@ -37,7 +37,7 @@ can_ok $ss, 'auth';
 	$guard->mock('POST', sub {
 		$ss->client->{_res} = response(401);
 	});
-	eval { $ss->auth(someone_else => 'test-password') };
+	eval { $ss->auth(username => 'someone_else', password => 'test-password') };
 	like $@, qr{invalid api}, 'invalid api authorization';
 }
 
@@ -46,7 +46,7 @@ can_ok $ss, 'auth';
 	$guard->mock('POST', sub {
 		$ss->client->{_res} = response([403],['POST','/auth/customer.json']);
 	});
-	eval { $ss->auth(someone_else => 'test-password') };
+	eval { $ss->auth(username => 'someone_else', password => 'test-password') };
 	like $@, qr{403 Forbidden}, 'invalid username/password';
 }
 
@@ -55,7 +55,7 @@ can_ok $ss, 'auth';
 	$guard->mock('POST', sub {
 		$ss->client->{_res} = response([200, undef, 'garbage'],['POST','/auth/customer.json']);
 	});
-	eval { $ss->auth(someone_else => 'test-password') };
+	eval { $ss->auth(username => 'someone_else', password => 'test-password') };
 	like $@, qr{garbage}, 'has error';
 }
 
