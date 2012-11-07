@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::HasClient::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::HasClient::VERSION = '0.001';
+  $WWW::Shutterstock::HasClient::VERSION = '0.001'; # TRIAL
 }
 
 # ABSTRACT: Role managing a client attribute

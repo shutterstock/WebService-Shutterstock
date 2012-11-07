@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Customer::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Customer::VERSION = '0.001';
+  $WWW::Shutterstock::Customer::VERSION = '0.001'; # TRIAL
 }
 
 # ABSTRACT: Class allowing API operations in the context of a specific customer
