@@ -30,7 +30,7 @@ has client => (
 
 sub _build_client {
 	my $self = shift;
-	my $client = WWW::Shutterstock::Client->new( host => 'http://api.shutterstock.com' );
+	my $client = WWW::Shutterstock::Client->new( host => $ENV{SS_API_HOST} || 'https://api.shutterstock.com' );
 	$client->addHeader(
 		Authorization => sprintf(
 			'Basic %s',
