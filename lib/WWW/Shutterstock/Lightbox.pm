@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Lightbox::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Lightbox::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Lightbox::VERSION = '0.001';
 }
 
 # ABSTRACT: Representation of a lightbox in Shutterstock's public API

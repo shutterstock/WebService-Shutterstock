@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Subscription::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Subscription::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Subscription::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a subscription for a specific Shutterstock customer

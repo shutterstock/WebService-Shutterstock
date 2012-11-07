@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::AuthedClient::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::AuthedClient::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::AuthedClient::VERSION = '0.001';
 }
 
 # ABSTRACT: Role comprising a REST client with the necessary auth token information

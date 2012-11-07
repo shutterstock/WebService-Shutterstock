@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::VERSION = '0.001';
 }
 
 # ABSTRACT: Easy access to Shutterstock's public API

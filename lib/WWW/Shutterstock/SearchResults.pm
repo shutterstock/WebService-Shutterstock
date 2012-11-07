@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::SearchResults::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::SearchResults::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::SearchResults::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
