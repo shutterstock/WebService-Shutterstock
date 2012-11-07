@@ -27,7 +27,9 @@ has response => ( is => 'ro', required => 0, handles => ['code'] );
 
 has error    => ( is => 'ro', required => 1 );
 
+
 has caller_info => ( is => 'ro', required => 1 );
+
 
 sub BUILDARGS {
 	my $class = shift;
@@ -92,11 +94,18 @@ The L<HTTP::Response> object for the API request that died.
 
 String error message.  Often, the body of the HTTP response that errored out.
 
+=head2 caller_info
+
+A HashRef of information (package, file, line) of where this exception
+originated (in non-WWW-Shutterstock land).
+
 =head1 METHODS
 
 =head2 to_string
 
 Stringifies to error message, used by overloaded stringification.
+
+=for Pod::Coverage BUILDARGS
 
 =head1 AUTHOR
 
