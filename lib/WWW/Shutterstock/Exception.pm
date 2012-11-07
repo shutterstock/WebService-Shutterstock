@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Exception::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Exception::VERSION = '0.001';
+  $WWW::Shutterstock::Exception::VERSION = '0.001'; # TRIAL
 }
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
