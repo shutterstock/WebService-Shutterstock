@@ -36,7 +36,18 @@ String error message.  Often, the body of the HTTP response that errored out.
 
 has error    => ( is => 'ro', required => 1 );
 
+=attr caller_info
+
+A HashRef of information (package, file, line) of where this exception
+originated (in non-WWW-Shutterstock land).
+
+=cut
+
 has caller_info => ( is => 'ro', required => 1 );
+
+=for Pod::Coverage BUILDARGS
+
+=cut
 
 sub BUILDARGS {
 	my $class = shift;
