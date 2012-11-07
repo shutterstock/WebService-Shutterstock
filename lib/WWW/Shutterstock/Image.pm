@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Image::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Image::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Image::VERSION = '0.001';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API

@@ -20,12 +20,12 @@ SYNOPSIS
             my $image = $ss->image(123456789);
 
             # certain actions require credentials for a specific customer account
-            my $account = $ss->auth( "myuser" => "mypassword" );
+            my $account = $ss->auth( username => "myuser", password => "mypassword" );
 
             # history of downloaded images across all subscriptions
             my $history = $account->downloads;
 
-            my $media_subscription = $account->subscription('media');
+            my $media_subscription = $account->subscription( license => 'media' );
             my $license = $media_subscription->license_image('123456789');
 
             # save the file locally as /my/photos/shutterstock_123456789.jpg

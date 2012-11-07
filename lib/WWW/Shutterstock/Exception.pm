@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Exception::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Exception::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Exception::VERSION = '0.001';
 }
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
@@ -27,24 +27,24 @@ has response => ( is => 'ro', required => 0, handles => ['code'] );
 
 has error    => ( is => 'ro', required => 1 );
 
-has caller   => ( is => 'ro', required => 1 );
+has caller_info => ( is => 'ro', required => 1 );
 
 sub BUILDARGS {
 	my $class = shift;
 	my $args = $class->SUPER::BUILDARGS(@_);
 	my $level = 0;
-	while(!$args->{caller} || $args->{caller}->{package} =~ /^(Sub::Quote|WWW::Shutterstock)/){
+	while(!$args->{caller_info} || $args->{caller_info}->{package} =~ /^(Sub::Quote|WWW::Shutterstock)/){
 		my @info = caller($level++) or last;
-		$args->{caller} = { package => $info[0], file => $info[1], line => $info[2] };
+		$args->{caller_info} = { package => $info[0], file => $info[1], line => $info[2] };
 	}
-	$args->{caller} ||= { package => 'N/A', file => 'N/A', line => -1 };
+	$args->{caller_info} ||= { package => 'N/A', file => 'N/A', line => -1 };
 	return $args;
 }
 
 
 sub to_string {
 	my $self = shift;
-	return sprintf("%s at %s line %s.\n", $self->error, $self->caller->{file}, $self->caller->{line});
+	return sprintf("%s at %s line %s.\n", $self->error, $self->caller_info->{file}, $self->caller_info->{line});
 }
 
 1;

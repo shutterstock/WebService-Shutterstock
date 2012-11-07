@@ -7,6 +7,9 @@ use Test::MockModule;
 my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
 
 can_ok $ss, 'auth';
+
+ok !eval{ $ss->auth() }, "dies on no params auth call";
+like $@, qr{missing 'password'}, 'error message accurate';
 {
 	my $guard = Test::MockModule->new('REST::Client');
 	$guard->mock('POST', sub {

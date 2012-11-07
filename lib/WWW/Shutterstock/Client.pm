@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Client::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Client::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Client::VERSION = '0.001';
 }
 
 # ABSTRACT: Provides easy REST interactions with the Shutterstock API
