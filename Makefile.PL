@@ -25,6 +25,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "WWW::Shutterstock",
   "PREREQ_PM" => {
+    "Carp" => 0,
     "JSON" => 0,
     "LWP::Simple" => 0,
     "MIME::Base64" => 0,

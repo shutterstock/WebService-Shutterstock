@@ -12,6 +12,7 @@ use strict;
 use warnings;
 use Moo;
 use WWW::Shutterstock::Subscription;
+use Carp qw(croak);
 
 with 'WWW::Shutterstock::AuthedClient';
 
@@ -37,9 +38,32 @@ sub _build_subscriptions {
 
 sub subscription {
 	my $self = shift;
-	my $type = shift;
-	my ($subscription) =  grep { $_->license eq $type } @{ $self->subscriptions };
+	my($subscription) = $self->find_subscriptions(@_);
 	return $subscription;
+}
+
+
+sub find_subscriptions {
+	my $self = shift;
+	my %criteria = @_;
+	my $filter = sub {
+		my $s = shift;
+		foreach my $m(keys %criteria){
+			croak "Invalid subscription filter key '$m': no such attribute on WWW::Shutterstock::Subscription" if !$s->can($m);
+			my $value = $s->$m;
+			my $matcher = $criteria{$m};
+			if(ref $matcher eq 'CODE'){
+				local $_ = $value;
+				return unless $matcher->($value);
+			} elsif(ref $matcher eq 'Regexp'){
+				return unless $value =~ $matcher;
+			} else {
+				return unless $value eq $matcher;
+			}
+		}
+		return 1;
+	};
+	return grep { $filter->($_) } @{ $self->subscriptions };
 }
 
 
@@ -61,7 +85,16 @@ sub lightboxes {
 sub lightbox {
 	my $self = shift;
 	my $id = shift;
-	return $self->new_with_auth('WWW::Shutterstock::Lightbox', lightbox_id => $id);
+	my $lightbox = $self->new_with_auth('WWW::Shutterstock::Lightbox', lightbox_id => $id);
+	eval { $lightbox->load; 1 } or do {
+		my $e = $@;
+		if(eval { $e->isa('WWW::Shutterstock::Exception') } && ($e->code eq 404 || $e->code eq 500)){
+			$lightbox = undef;
+		} else {
+			die $e;
+		}
+	};
+	return $lightbox;
 }
 
 
@@ -98,7 +131,7 @@ version 0.001
 	my $lightbox = $customer->lightbox(123);
 
 	my $subscriptions = $customer->subscriptions;
-	my $premier_subscription = $customer->subscription('premier');
+	my $premier_subscription = $customer->subscription(license => 'premier');
 
 	my $download_history = $customer->downloads;
 
@@ -119,7 +152,33 @@ Returns an ArrayRef of L<WWW::Shutterstock::Subscription> objects for this custo
 
 =head2 subscription
 
-Retrieve a specific L<WWW::Shutterstock::Subscription> object, based on the type of subscription (i.e. "premier", "premier_digitial", "media", "media_digital")
+Convenience wrapper around the C<find_subscriptions> method that always
+returns the first match (useful when you're matching on a field that is
+unique like C<id> or C<license>).
+
+	# find the (single) Media Digital subscription for your account
+	my $media_digital_subscription = $customer->subscription(license => 'media_digital');
+
+=head2 find_subscriptions
+
+Retrieve a list of L<WWW::Shutterstock::Subscription> objects, based
+on the criteria passed in to the method. Filter criteria should have
+L<WWW::Shutterstock::Subscription> attribute names as keys with the value
+to be matched as the value.  Subscriptions that match ALL the provided
+criteria are returned as a list.  Some examples:
+
+	# simple equality filters
+	my @active_subscriptions = $customer->find_subscriptions( is_active => 1 );
+	my @active_subscriptions = $customer->find_subscriptions( is_active => 1 );
+
+	# regular expressions work too
+	my @all_media_subscriptions = $customer->find_subscriptions( license => qr{^media} );
+
+	# use an anonymous sub for more detailed filters (i.e. subscriptions expiring in the 
+	my @soon_to_expire = $customer->find_subscriptions(
+		is_active            => 1,
+		unix_expiration_time => sub { shift < time + ( 60 * 60 * 24 * 30 ) }
+	);
 
 =head2 lightboxes($get_extended_info)
 
@@ -132,11 +191,32 @@ to this method.
 
 =head2 lightbox($id)
 
-Returns a specific lightbox (as a L<WWW::Shutterstock::Lightbox> object) for the given C<$id> (it must belong to this user).
+Returns a specific lightbox (as a L<WWW::Shutterstock::Lightbox> object)
+for the given C<$id> (it must belong to this user).  If that lightbox
+doesn't exist, C<undef> will be returned.  Unfortunately, Shutterstock's
+API currently returns an HTTP status of C<500> on an unknown lightbox ID
+(which could mask other error situations).
 
 =head2 downloads
 
-Retrieve the download history for this customer account.
+Retrieve the download history for this customer account.  The data
+returned will look something like this:
+
+	[
+		{
+			image_id => 1,
+			license  => 'media',
+			metadata => { purchase_order => 'ABC' },
+			time     => '2012-11-01 14:16:08',
+		},
+		{
+			image_id => 2,
+			license  => 'media_digital',
+			metadata => { purchase_order => 'XYZ', client => 'My Client' },
+			time     => '2012-11-01 14:18:39',
+		},
+		# etc...
+	]
 
 =head1 AUTHOR
 

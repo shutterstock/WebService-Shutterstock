@@ -40,12 +40,20 @@ DESCRIPTION
     from Shutterstock with the appropriate permissions in order to use this
     module.
 
+   Errors
+    If you provide an invalid "api_username" or "api_key", the first request
+    executed will die with a WWW::Shutterstock::Exception object. This
+    exception object should have the necessary information for you to
+    diagnose what exactly went wrong (including the full request and
+    response objects that preceded the error). WWW::Shutterstock::Exception
+    objects will be thrown on unexpected errors as well.
+
 METHODS
   new( api_username => $api_username, api_key => $api_key )
     Constructor method, requires both the "api_username" and "api_key"
     parameters be passed in.
 
-  auth($username, $password)
+  auth(username => $username, password => $password)
     Authenticate for a specific customer account. Returns a
     WWW::Shutterstock::Customer object. If authentication fails, an
     exception is thrown (see WWW::Shutterstock::Exception and "ERRORS"
@@ -63,13 +71,6 @@ METHODS
   image($image_id)
     Performs a lookup on a single image. Returns a WWW::Shutterstock::Image
     object (or "undef" if the image doesn't exist).
-
-ERRORS
-    In the event of an unexpected error, this module will die with a
-    WWW::Shutterstock::Exception object. This object should have the
-    necessary information for you to diagnose what exactly went wrong
-    (including the full request and response objects that preceded the
-    error).
 
 AUTHOR
     Brian Phillips <bphillips@cpan.org>

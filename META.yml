@@ -17,6 +17,7 @@ meta-spec:
   version: 1.4
 name: WWW-Shutterstock
 requires:
+  Carp: 0
   JSON: 0
   LWP::Simple: 0
   MIME::Base64: 0

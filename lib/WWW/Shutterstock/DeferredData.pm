@@ -23,6 +23,7 @@ sub deferred {
 		} else {
 			($src,$dst,$is) = ($f, $f,'ro');
 		}
+		$is ||= 'ro';
 		no strict 'refs';
 		my $sub = $target . '::' . $dst;
 		*$sub = sub {

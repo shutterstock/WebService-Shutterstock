@@ -16,7 +16,7 @@ my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
 		);
 	});
 	eval {
-		$ss->auth('test-password');
+		$ss->auth(password => 'test-password');
 		ok(0, 'exception thrown correctly');
 		1;
 	} or do {

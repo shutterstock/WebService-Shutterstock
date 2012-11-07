@@ -53,8 +53,23 @@ can_ok $customer, 'lightboxes';
 	$customer->lightboxes;
 }
 
-my $lightbox = $customer->lightbox(1);
-isa_ok $lightbox, 'WWW::Shutterstock::Lightbox';
+{
+	my $guard = Test::MockModule->new('REST::Client');
+	$guard->mock('GET', sub {
+		my($self, $url) = @_;
+		like $url, qr'/lightboxes/\d+/extended.json', 'correct URL';
+		my($id) = $url =~ qr'/lightboxes/(\d+)';
+		if($id == 1){
+			return $self->response(response(200, '{"lightbox_id":1,"lightbox_name":"test","images":[{"image_id":1,"sizes":{"huge":{"height":100,"width":100}}}]}'));
+		} else {
+			return $self->response( response(404, '') );
+		}
+	});
+	my $lightbox = $customer->lightbox(1);
+	isa_ok $lightbox, 'WWW::Shutterstock::Lightbox';
+	my $other = $customer->lightbox(2);
+	is $other, undef, "lightbox 2 does not exist";
+}
 
 done_testing;
 
