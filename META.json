@@ -1,0 +1,61 @@
+{
+   "abstract" : "Easy access to Shutterstock's public API",
+   "author" : [
+      "Brian Phillips <bphillips@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300025, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "WWW-Shutterstock",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "JSON" : "0",
+            "LWP::Simple" : "0",
+            "MIME::Base64" : "0",
+            "Moo" : "1",
+            "Moo::Role" : "0",
+            "REST::Client" : "0",
+            "Sub::Exporter" : "0",
+            "overload" : "0",
+            "strict" : "0",
+            "version" : "0",
+            "warnings" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "File::Find" : "0",
+            "File::Temp" : "0",
+            "Test::MockModule" : "0",
+            "Test::More" : "0"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/brianphillips/WWW-Shutterstock/issues"
+      },
+      "homepage" : "http://api.shutterstock.com",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/brianphillips/WWW-Shutterstock.git",
+         "web" : "https://github.com/brianphillips/WWW-Shutterstock"
+      }
+   },
+   "version" : "0.001",
+   "x_authority" : "cpan:BPHILLIPS"
+}
+

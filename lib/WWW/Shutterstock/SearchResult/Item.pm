@@ -1,0 +1,106 @@
+package WWW::Shutterstock::SearchResult::Item;
+BEGIN {
+  $WWW::Shutterstock::SearchResult::Item::AUTHORITY = 'cpan:BPHILLIPS';
+}
+{
+  $WWW::Shutterstock::SearchResult::Item::VERSION = '0.001';
+}
+
+# ABSTRACT: Class representing a single search result from the Shutterstock API
+
+use strict;
+use warnings;
+use Moo;
+
+with 'WWW::Shutterstock::HasClient';
+
+
+has photo_id => ( is => 'ro' ); # sic, should be image_id to be consistant I think
+
+has thumb_small => ( is => 'ro' );
+has thumb_large => ( is => 'ro' );
+has preview     => ( is => 'ro' );
+
+has web_url     => ( is => 'ro' );
+has description => ( is => 'ro' );
+
+
+sub image {
+	my $self = shift;
+	return $self->new_with_client( 'WWW::Shutterstock::Image', image_id => $self->photo_id );
+}
+
+1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+WWW::Shutterstock::SearchResult::Item - Class representing a single search result from the Shutterstock API
+
+=head1 VERSION
+
+version 0.001
+
+=head1 SYNOPSIS
+
+	my $search = $ss->search(searchterm => 'blue cow');
+	my $results = $search->results;
+	foreach my $result(@$results){
+		printf "%d: %s\n", $result->photo_id, $result->description;
+		print "Tags: ";
+		print join ", ", @{ $result->image->keywords };
+		print "\n";
+	}
+
+=head1 DESCRIPTION
+
+An object of this class provides information about a single search result.  When executing a search, an array
+of these objects is returned by the L<WWW::Shutterstock::SearchResults/"results"> method.
+
+=head1 ATTRIBUTES
+
+=head2 photo_id
+
+The image ID for this search result.
+
+=head2 thumb_small
+
+A HashRef containing a height, width and URL for a "small" thumbnail of this image. 
+
+=head2 thumb_large
+
+A HashRef containing a height, width and URL for a "large" thumbnail of this image. 
+
+=head2 preview
+
+A HashRef containing a height, width and URL for a watermarked preview of this image. 
+
+=head2 web_url
+
+The L<http://www.shutterstock.com> link for this image.
+
+=head2 description
+
+An abbreviated description of this search result.
+
+=head1 METHODS
+
+=head2 image
+
+Returns a L<WWW::Shutterstock::Image> object for this search result.
+
+=head1 AUTHOR
+
+Brian Phillips <bphillips@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Brian Phillips and Shutterstock, Inc. (http://shutterstock.com).
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

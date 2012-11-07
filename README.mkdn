@@ -1,0 +1,87 @@
+# NAME
+
+WWW::Shutterstock - Easy access to Shutterstock's public API
+
+# VERSION
+
+version 0.001
+
+# SYNOPSIS
+
+	my $ss = WWW::Shutterstock->new(
+		api_username => 'justme',
+		api_key      => 'abcdef1234567890'
+	);
+
+	# perform a search
+	my $search = $ss->search( searchterm => 'blue cow' );
+
+	# retrieve results of search
+	my $results = $search->results;
+
+	# details about a specific image (lookup by ID)
+	my $image = $ss->image(123456789);
+
+	# certain actions require credentials for a specific customer account
+	my $account = $ss->auth( "myuser" => "mypassword" );
+
+	# history of downloaded images across all subscriptions
+	my $history = $account->downloads;
+
+	my $media_subscription = $account->subscription('media');
+	my $license = $media_subscription->license_image('123456789');
+
+	# save the file locally as /my/photos/shutterstock_123456789.jpg
+	$license->save("/my/photos");
+
+	# save the file locally as /my/photos/favorite-pic.jpg
+	$license->save("/my/photos/favorite-pic.jpg");
+
+# DESCRIPTION
+
+This module provides an easy way to interact with the [Shutterstock, Inc. API](http://api.shutterstock.com).
+You will need an API username and key from Shutterstock with the
+appropriate permissions in order to use this module.
+
+# METHODS
+
+## new( api\_username => $api\_username, api\_key => $api\_key )
+
+Constructor method, requires both the `api_username` and `api_key` parameters be passed in.
+
+## auth($username, $password)
+
+Authenticate for a specific customer account.  Returns a
+[WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer) object.  If authentication fails, an
+exception is thrown (see [WWW::Shutterstock::Exception](http://search.cpan.org/perldoc?WWW::Shutterstock::Exception) and ["ERRORS"](#ERRORS)
+section for more information).
+
+## categories
+
+Returns a list of photo categories (useful for specifying a category\_id when searching).
+
+## search(%search\_query)
+
+Perform a search.  Accepts any params documented here: [http://api.shutterstock.com/\#imagessearch](http://api.shutterstock.com/\#imagessearch).  Returns a [WWW::Shutterstock::SearchResults](http://search.cpan.org/perldoc?WWW::Shutterstock::SearchResults) object.
+
+## image($image\_id)
+
+Performs a lookup on a single image.  Returns a [WWW::Shutterstock::Image](http://search.cpan.org/perldoc?WWW::Shutterstock::Image) object (or `undef` if the image doesn't exist).
+
+# ERRORS
+
+In the event of an unexpected error, this module will die with a
+[WWW::Shutterstock::Exception](http://search.cpan.org/perldoc?WWW::Shutterstock::Exception) object.  This object should have the
+necessary information for you to diagnose what exactly went wrong
+(including the full request and response objects that preceded the error).
+
+# AUTHOR
+
+Brian Phillips <bphillips@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2012 by Brian Phillips and Shutterstock, Inc. (http://shutterstock.com).
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
