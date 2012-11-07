@@ -143,7 +143,7 @@ sub image {
 	# history of downloaded images across all subscriptions
 	my $history = $account->downloads;
 
-	my $media_subscription = $account->subscription('media');
+	my $media_subscription = $account->subscription( license => 'media' );
 	my $license = $media_subscription->license_image('123456789');
 
 	# save the file locally as /my/photos/shutterstock_123456789.jpg
