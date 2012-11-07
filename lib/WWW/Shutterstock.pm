@@ -61,6 +61,9 @@ sub auth {
 	my $self = shift;
 	my %args = @_;
 	$args{username} ||= $self->api_username;
+	if(!$args{password}){
+		die WWW::Shutterstock::Exception->new( error => "missing 'password' param for auth call");
+	}
 	$self->client->POST(
 		'/auth/customer.json',
 		{
@@ -135,7 +138,7 @@ sub image {
 	my $image = $ss->image(123456789);
 
 	# certain actions require credentials for a specific customer account
-	my $account = $ss->auth( "myuser" => "mypassword" );
+	my $account = $ss->auth( username => "myuser", password => "mypassword" );
 
 	# history of downloaded images across all subscriptions
 	my $history = $account->downloads;
