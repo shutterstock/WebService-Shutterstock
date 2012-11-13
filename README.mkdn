@@ -45,9 +45,17 @@ version 0.001
 
 # DESCRIPTION
 
-This module provides an easy way to interact with the [Shutterstock, Inc. API](http://api.shutterstock.com).
-You will need an API username and key from Shutterstock with the
-appropriate permissions in order to use this module.
+This module provides an easy way to interact with the [Shutterstock, Inc. API](http://api.shutterstock.com).  You will need an API username
+and key from Shutterstock with the appropriate permissions in order to
+use this module.
+
+While there are some actions you can perform with this object (as shown
+under the ["METHODS"](#METHODS) section), many API operations are done within
+the context of a specific user/account or a specific subscription.
+Some of these operations are shown in the ["SYNOPSIS"](#SYNOPSIS) here but full
+documentation can be found in the module that implements the method
+(i.e. [WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer), [WWW::Shutterstock::Subscription](http://search.cpan.org/perldoc?WWW::Shutterstock::Subscription),
+[WWW::Shutterstock::LicensedImage](http://search.cpan.org/perldoc?WWW::Shutterstock::LicensedImage), etc).
 
 ### Errors
 
@@ -70,6 +78,9 @@ Authenticate for a specific customer account.  Returns a
 [WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer) object.  If authentication fails, an
 exception is thrown (see [WWW::Shutterstock::Exception](http://search.cpan.org/perldoc?WWW::Shutterstock::Exception) and ["ERRORS"](#ERRORS)
 section for more information).
+
+This is the main entry point for any operation dealing with subscriptions,
+image licensing, download history or lightboxes.
 
 ## categories
 
