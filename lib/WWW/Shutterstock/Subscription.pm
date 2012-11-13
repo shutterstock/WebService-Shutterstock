@@ -7,6 +7,7 @@ use warnings;
 use Moo;
 use JSON qw(encode_json);
 use WWW::Shutterstock::LicensedImage;
+use Carp qw(croak);
 
 with 'WWW::Shutterstock::AuthedClient';
 
@@ -42,7 +43,7 @@ foreach my $f(@fields){
 	has $f => ( is => 'ro' );
 }
 
-=method license_image( $id, $size )
+=method license_image( image_id => $id, size => $size )
 
 Licenses a specific image in the requested size.  Returns a L<WWW::Shutterstock::LicensedImage> object.
 
@@ -50,9 +51,20 @@ Licenses a specific image in the requested size.  Returns a L<WWW::Shutterstock:
 
 sub license_image {
 	my $self     = shift;
-	my $image_id = shift;
-	my $size     = shift;
-	my $metadata = shift || {purchase_order => '', job => '', client => '', other => ''};
+	my %args     = @_;
+	my $image_id = $args{image_id} or croak "Must specify image_id to license";
+	my $size     = $args{size} or croak "Must specify size of image to license";
+	my $metadata = $args{metadata} || {purchase_order => '', job => '', client => '', other => ''};
+
+	my @valid_sizes =
+	  map { $_->{name} }
+	  grep { $_->{name} ne 'supersize' && $_->{format} ne 'tiff' }
+	  values %{ $self->sizes || {} };
+	if ( @valid_sizes && !grep { $_ eq $size } @valid_sizes ) {
+		croak "invalid size '$size' (valid options: "
+		  . ( join ", ", sort @valid_sizes ) . ")";
+	}
+
 	my $format   = $size eq 'vector' ? 'eps' : 'jpg';
 	my $client   = $self->client;
 	$client->POST(

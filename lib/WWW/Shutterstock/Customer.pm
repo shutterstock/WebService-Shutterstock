@@ -45,8 +45,8 @@ Convenience wrapper around the C<find_subscriptions> method that always
 returns the first match (useful when you're matching on a field that is
 unique like C<id> or C<license>).
 
-	# find the (single) Media Digital subscription for your account
-	my $media_digital_subscription = $customer->subscription(license => 'media_digital');
+	# find the (single) subscription providing an enhanced license
+	my $media_digital_subscription = $customer->subscription(license => 'enhanced');
 
 =cut
 
@@ -160,13 +160,12 @@ returned will look something like this:
 	[
 		{
 			image_id => 1,
-			license  => 'media',
-			metadata => { purchase_order => 'ABC' },
+			license  => 'standard',
 			time     => '2012-11-01 14:16:08',
 		},
 		{
 			image_id => 2,
-			license  => 'media_digital',
+			license  => 'premier',
 			metadata => { purchase_order => 'XYZ', client => 'My Client' },
 			time     => '2012-11-01 14:18:39',
 		},
@@ -187,7 +186,7 @@ sub downloads {
 
 =head1 SYNOPSIS
 
-	my $customer = $ss->auth("my-user" => "my-password");
+	my $customer = $shutterstock->auth("my-user" => "my-password");
 
 	# retrieve list of lightboxes
 	my $lightboxes = $customer->ligthboxes;

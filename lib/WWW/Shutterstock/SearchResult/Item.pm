@@ -58,7 +58,7 @@ sub image {
 
 =head1 SYNOPSIS
 
-	my $search = $ss->search(searchterm => 'blue cow');
+	my $search = $shutterstock->search(searchterm => 'butterfly');
 	my $results = $search->results;
 	foreach my $result(@$results){
 		printf "%d: %s\n", $result->photo_id, $result->description;

@@ -71,7 +71,9 @@ sub results {
 =method next_page
 
 Retrieves the next page of search results (represented as a
-L<WWW::Shutterstock::SearchResults> object).
+L<WWW::Shutterstock::SearchResults> object).  This is just a shortcut
+for specifying a specific C<page_number> in the arguments to the
+L<search|WWW::Shutterstock/search> method.
 
 =cut
 
@@ -87,7 +89,7 @@ sub next_page {
 
 =head1 SYNOPSIS
 
-	my $search = $ss->search(searchterm => 'blue cow');
+	my $search = $shutterstock->search(searchterm => 'butterfly');
 	my $results = $search->results;
 
 	my $next_results = $search->next_page;
