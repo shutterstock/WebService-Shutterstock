@@ -55,6 +55,9 @@ L<WWW::Shutterstock::Customer> object.  If authentication fails, an
 exception is thrown (see L<WWW::Shutterstock::Exception> and L</"ERRORS">
 section for more information).
 
+This is the main entry point for any operation dealing with subscriptions,
+image licensing, download history or lightboxes.
+
 =cut
 
 sub auth {
@@ -160,9 +163,18 @@ sub image {
 
 =head1 DESCRIPTION
 
-This module provides an easy way to interact with the L<Shutterstock, Inc. API|http://api.shutterstock.com>.
-You will need an API username and key from Shutterstock with the
-appropriate permissions in order to use this module.
+This module provides an easy way to interact with the L<Shutterstock,
+Inc. API|http://api.shutterstock.com>.  You will need an API username
+and key from Shutterstock with the appropriate permissions in order to
+use this module.
+
+While there are some actions you can perform with this object (as shown
+under the L</METHODS> section), many API operations are done within
+the context of a specific user/account or a specific subscription.
+Some of these operations are shown in the L</SYNOPSIS> here but full
+documentation can be found in the module that implements the method
+(i.e. L<WWW::Shutterstock::Customer>, L<WWW::Shutterstock::Subscription>,
+L<WWW::Shutterstock::LicensedImage>, etc).
 
 =head3 Errors
 
