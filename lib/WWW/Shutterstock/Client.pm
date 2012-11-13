@@ -90,6 +90,13 @@ sub process_response {
 	my $response = $self->{_res}; # blech, why isn't this public?
 	my $request = $response->request;
 
+	if(my $error = $response->header('X-Died')){
+		die WWW::Shutterstock::Exception->new(
+			response => $response,
+			error    => sprintf( 'Transport error: %s', $error )
+		);
+	}
+
 	if(my $h = $handlers{$code}){
 		$h->($response);
 	} elsif($code <= 299){ # a success
