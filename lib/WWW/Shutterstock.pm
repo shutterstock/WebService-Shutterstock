@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::VERSION = '0.001';
 }
 
 # ABSTRACT: Easy access to Shutterstock's public API
@@ -113,31 +113,37 @@ version 0.001
 
 =head1 SYNOPSIS
 
-	my $ss = WWW::Shutterstock->new(
+	my $shutterstock = WWW::Shutterstock->new(
 		api_username => 'justme',
 		api_key      => 'abcdef1234567890'
 	);
 
 	# perform a search
-	my $search = $ss->search( searchterm => 'blue cow' );
+	my $search = $shutterstock->search( searchterm => 'hummingbird' );
 
 	# retrieve results of search
 	my $results = $search->results;
 
 	# details about a specific image (lookup by ID)
-	my $image = $ss->image(123456789);
+	my $image = $shutterstock->image( 59915404 );
 
 	# certain actions require credentials for a specific customer account
-	my $account = $ss->auth( username => "myuser", password => "mypassword" );
+	my $account = $shutterstock->auth( username => "myuser", password => "mypassword" );
 
 	# history of downloaded images across all subscriptions
 	my $history = $account->downloads;
 
-	my $media_subscription = $account->subscription( license => 'media' );
-	my $license = $media_subscription->license_image('123456789');
+	my $subscription = $account->subscription( license => 'standard' );
+	my $license = $subscription->license_image( image_id => 59915404, size => 'medium' );
 
-	# save the file locally as /my/photos/shutterstock_123456789.jpg
-	$license->save("/my/photos");
+	# save the file locally as /my/photos/shutterstock_59915404.jpg
+	$license->download( directory => "/my/photos" );
+
+	# or to a specific file
+	$license->download( file => "/my/photos/hummingbird.jpg" );
+
+	# returns the raw bytes of the image
+	my $bytes = $license->download;
 
 	# save the file locally as /my/photos/favorite-pic.jpg
 	$license->save("/my/photos/favorite-pic.jpg");

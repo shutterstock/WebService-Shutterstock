@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::SearchResults::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::SearchResults::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::SearchResults::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
@@ -73,7 +73,7 @@ version 0.001
 
 =head1 SYNOPSIS
 
-	my $search = $ss->search(searchterm => 'blue cow');
+	my $search = $shutterstock->search(searchterm => 'butterfly');
 	my $results = $search->results;
 
 	my $next_results = $search->next_page;
@@ -106,7 +106,9 @@ page of search results.
 =head2 next_page
 
 Retrieves the next page of search results (represented as a
-L<WWW::Shutterstock::SearchResults> object).
+L<WWW::Shutterstock::SearchResults> object).  This is just a shortcut
+for specifying a specific C<page_number> in the arguments to the
+L<search|WWW::Shutterstock/search> method.
 
 =for Pod::Coverage BUILD _results_data
 

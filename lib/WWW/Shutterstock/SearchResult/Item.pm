@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::SearchResult::Item::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::SearchResult::Item::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::SearchResult::Item::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a single search result from the Shutterstock API
@@ -46,7 +46,7 @@ version 0.001
 
 =head1 SYNOPSIS
 
-	my $search = $ss->search(searchterm => 'blue cow');
+	my $search = $shutterstock->search(searchterm => 'butterfly');
 	my $results = $search->results;
 	foreach my $result(@$results){
 		printf "%d: %s\n", $result->photo_id, $result->description;

@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::Image::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Image::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::Image::VERSION = '0.001';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API
@@ -78,12 +78,17 @@ version 0.001
 
 =head1 SYNOPSIS
 
-	my $image = $ss->image(123456789);
-	printf "Image %d (%dx%d) - %s\n", $image->id, $image->size('huge')->{width},
-	  $image->size('huge')->{height}, $image->description;
+	my $image = $shutterstock->image(59915404);
+	printf(
+		"Image %d (%dx%d) - %s\n",
+		$image->id,
+		$image->size('huge')->{width},
+		$image->size('huge')->{height},
+		$image->description
+	);
 	print "Categories:\n";
 	foreach my $category ( @{ $image->categories } ) {
-		printf " - %s (%d)\n", $category->{category}, $category->{category_id};
+		printf( " - %s (%d)\n", $category->{category}, $category->{category_id} );
 	}
 
 =head1 DESCRIPTION

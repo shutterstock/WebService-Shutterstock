@@ -3,7 +3,7 @@ BEGIN {
   $WWW::Shutterstock::LicensedImage::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::LicensedImage::VERSION = '0.001'; # TRIAL
+  $WWW::Shutterstock::LicensedImage::VERSION = '0.001';
 }
 
 # ABSTRACT: Allows for interogating and saving a licensed image from the Shutterstock API
@@ -28,24 +28,30 @@ sub BUILDARGS {
 }
 
 
-sub save {
+sub download {
 	my $self = shift;
-	my $destination = shift;
+	my %args = @_;
+
 	my $url = $self->download_url;
-	if(-d $destination){
+	my $destination;
+	if($args{directory}){
+		$destination = $args{directory};
 		$destination =~ s{/$}{};
 		my($basename) = $url =~ m{.+/(.+)};
 		$destination .= "/$basename";
+	} elsif($args{file}){
+		$destination = $args{file};
 	}
+
 	my $ua = LWP::UserAgent->new;
-	my $response = $ua->get($url, ':content_file' => $destination);
+	my $response = $ua->get( $url, ( $destination ? ( ':content_file' => $destination ) : () ) );
 	if(my $died = $response->header('X-Died') ){
 		die WWW::Shutterstock::Exception->new(
 			response => $response,
 			error    => "Unable to save image to $destination: $died"
 		);
 	} elsif($response->code == 200){
-		return $destination;
+		return $destination || $response->content;
 	} else {
 		die WWW::Shutterstock::Exception->new(
 			response => $response,
@@ -70,15 +76,17 @@ version 0.001
 
 =head1 SYNOPSIS
 
-	my $licensed_image = $subscription->license_image(123456789, 'medium');
+	my $licensed_image = $subscription->license_image(image_id => 59915404, size => 'medium');
 
-	# saves the file to the /my/photos directory (typically as something like shutterstock_123456789.jpg)
-	$licensed_image->save('/my/photos');
+	# retrieve the bytes of the file
+	my $jpg_bytes = $licensed_image->download;
 
-	# or specify the actual filename
-	$licensed_image->save('/my/photos/my-pic.jpg');
+	# or, save the file to a valid filename
+	$licensed_image->download(file => '/my/photos/my-pic.jpg');
 
-=head1 DESCRIPTION
+	# or, specify the directory and the filename will reflect what the server specifies
+	# (typically as something like shutterstock_59915404.jpg)
+	my $path_to_file = $licensed_image->download(directory => '/my/photos');
 
 =head1 ATTRIBUTES
 
@@ -92,14 +100,18 @@ version 0.001
 
 =head1 METHODS
 
-=head2 save($file_or_directory)
+=head2 download
 
-Saves a licensed image to a local file.  If a directory is specified
-by the method argument, the image is saved in that directory using the
-filename indicated by the server.  Otherwise, the file is saved to the
-full path of the file indicated.
+Downloads a licensed image.  If no arguments are specified, the raw bytes
+of the file are returned.  You can also specify a file OR a directory
+(one or the other) to save the file instead of returning the raw bytes
+(as demonstrated in the SYNOPSIS).
 
-The path to the saved file is returned.
+If a C<directory> or C<file> option is given, the path to the saved file
+is returned.
+
+B<WARNING:> files will be silently overwritten if an existing file of
+the same name already exists.
 
 =for Pod::Coverage BUILDARGS
 

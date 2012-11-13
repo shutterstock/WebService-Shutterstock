@@ -22,7 +22,7 @@ can_ok $customer, 'subscriptions';
 		return $self->response(
 			response(
 				200,
-				'[{"subscription_id":1,"unix_expiration_time":0,"license":"premier"},{"subscription_id":2,"unix_expiration_time":0,"license":"premier_digital"}]'
+				'[{"subscription_id":1,"unix_expiration_time":0,"license":"premier"},{"subscription_id":2,"unix_expiration_time":0,"license":"premier_digital","sizes":{"medium_jpg":{"format":"jpg","name":"medium"}}}]'
 			)
 		);
 	});
@@ -53,18 +53,27 @@ can_ok $customer, 'subscriptions';
 		);
 	});
 
-	my $image = $customer->subscription(license => 'premier_digital')->license_image(1 => 'medium', { key => 'value' });
+	eval {
+		$customer->subscription( license => 'premier_digital' )->license_image( image_id => 1, size => 'bogus' );
+		ok 0, 'should die';
+	} or do {
+		like $@, qr{invalid size.*bogus}, 'errors on invalid size';
+	};
+	my $image = $customer->subscription(license => 'premier_digital')->license_image(image_id => 1, size => 'medium', metadata => { key => 'value' });
 	my $lwp = Test::MockModule->new('LWP::UserAgent');
 	my $desired_dest;
 	$lwp->mock('request', sub {
 		my($self, $request, $dest) = @_;
 		is $request->uri, 'http://download.shutterstock.com/gatekeeper/testing/shutterstock_1.jpg', 'has correct download URL';
-		is $dest, $desired_dest, 'has correct destination';
-		return response( 200 );
+		is $dest, $desired_dest, 'has correct destination: ' . ($dest || '[undef]');
+		return response( 200, 'raw bytes' );
 	});
-	$image->save($desired_dest = '/tmp/foo');
+	$image->download( file => $desired_dest = '/tmp/foo');
 	$desired_dest = './shutterstock_1.jpg';
-	$image->save('./');
+	is $image->download(directory => './'), $desired_dest, 'returns path to file';
+	$desired_dest = undef;
+	is $image->download, 'raw bytes', 'returns raw bytes';
+
 }
 
 done_testing;

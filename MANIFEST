@@ -7,6 +7,8 @@ Makefile.PL
 README
 README.mkdn
 dist.ini
+examples/download.pl
+examples/subscriptions.pl
 lib/WWW/Shutterstock.pm
 lib/WWW/Shutterstock/AuthedClient.pm
 lib/WWW/Shutterstock/Client.pm
