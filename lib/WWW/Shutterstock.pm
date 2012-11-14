@@ -44,7 +44,9 @@ sub _build_client {
 
 =method new( api_username => $api_username, api_key => $api_key )
 
-Constructor method, requires both the C<api_username> and C<api_key> parameters be passed in.
+Constructor method, requires both the C<api_username> and C<api_key>
+parameters be passed in.  If you provide invalid values that the API
+doesn't recognize, the first API call you make will throw an exception
 
 =cut
 
@@ -141,25 +143,7 @@ sub image {
 	my $image = $shutterstock->image( 59915404 );
 
 	# certain actions require credentials for a specific customer account
-	my $account = $shutterstock->auth( username => "myuser", password => "mypassword" );
-
-	# history of downloaded images across all subscriptions
-	my $history = $account->downloads;
-
-	my $subscription = $account->subscription( license => 'standard' );
-	my $license = $subscription->license_image( image_id => 59915404, size => 'medium' );
-
-	# save the file locally as /my/photos/shutterstock_59915404.jpg
-	$license->download( directory => "/my/photos" );
-
-	# or to a specific file
-	$license->download( file => "/my/photos/hummingbird.jpg" );
-
-	# returns the raw bytes of the image
-	my $bytes = $license->download;
-
-	# save the file locally as /my/photos/favorite-pic.jpg
-	$license->save("/my/photos/favorite-pic.jpg");
+	my $customer = $shutterstock->auth( username => $customer, password => $password );
 
 =head1 DESCRIPTION
 
@@ -171,18 +155,53 @@ use this module.
 While there are some actions you can perform with this object (as shown
 under the L</METHODS> section), many API operations are done within
 the context of a specific user/account or a specific subscription.
-Some of these operations are shown in the L</SYNOPSIS> here but full
-documentation can be found in the module that implements the method
-(i.e. L<WWW::Shutterstock::Customer>, L<WWW::Shutterstock::Subscription>,
-L<WWW::Shutterstock::LicensedImage>, etc).
+Below are some additional examples of how to use this set of API modules.
+You will find more examples and documentation in the related modules as
+well as the C<examples> directory in the source of the distribution.
 
-=head3 Errors
+=head3 Licensing and Downloading
 
-If you provide an invalid C<api_username> or C<api_key>, the first request
-executed will die with a L<WWW::Shutterstock::Exception> object.
-This exception object should have the necessary information for you to
-diagnose what exactly went wrong (including the full request and response
-objects that preceded the error).  L<WWW::Shutterstock::Exception> objects
-will be thrown on unexpected errors as well.
+Licensing images happens in the context of a
+L<WWW::Shutterstock::Customer> object.  For example:
+
+	my $licensed_image = $customer->license_image(
+		image_id => 59915404,
+		size     => 'medium'
+	);
+
+If you have more than one active subscription, you will need to
+specify which subscription to license the image under.  Please see
+L<WWW::Shutterstock::Customer/license_image> for more details.
+
+Once you have a L<licensed image|WWW::Shutterstock::LicensedImage>,
+you can then download the image:
+
+	$licensed_image->download(file => '/my/photos/hummingbird.jpg');
+
+Every image licensed under your account (whether through shutterstock.com or the
+API) can be retrieved using the L<customer|WWW::Shutterstock::Customer>
+object as well:
+
+	my $downloads = $customer->downloads;
+
+=head3 Lightboxes
+
+Lightbox retrieval starts with a L<customer|WWW::Shutterstock::Customer>
+as well but most methods are documented in the
+L<WWW::Shutterstock::Lightbox> module.  Here's a short example:
+
+	my $lightboxes = $customer->lightboxes;
+	my($favorites) = grep {$_->name eq 'Favorites'} @$lightboxes;
+	$favorites->add_image(59915404);
+
+	my $favorite_images = $favorite->images;
+
+=head1 ERROR HANDLING
+
+If an API call fails in an unexpected way, an exception object (see
+L<WWW::Shutterstock::Exception>) will be thrown.  This object should
+have all the necessary information for you to handle the error if you
+choose but also stringifies to something informative enough to be
+useful as well.
 
 =cut

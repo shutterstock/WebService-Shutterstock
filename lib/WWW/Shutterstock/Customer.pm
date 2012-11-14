@@ -7,6 +7,7 @@ use warnings;
 use Moo;
 use WWW::Shutterstock::Subscription;
 use Carp qw(croak);
+use JSON qw(encode_json);
 
 with 'WWW::Shutterstock::AuthedClient';
 
@@ -52,7 +53,7 @@ unique like C<id> or C<license>).
 
 sub subscription {
 	my $self = shift;
-	my($subscription) = $self->find_subscriptions(@_);
+	my ( $subscription, @extra ) = $self->find_subscriptions(@_);
 	return $subscription;
 }
 
@@ -182,6 +183,105 @@ sub downloads {
 	return $self->client->process_response;
 }
 
+=method license_image(image_id => $image_id, size => $size)
+
+Licenses a specific image in the requested size.  Returns a
+L<WWW::Shutterstock::LicensedImage> object.
+
+If you have more than one active subscription, you will need to specify
+which subscription you would like to use for licensing with a C<subscription>
+argument.  You can pass in a L<WWW::Shutterstock::Subscription> object or
+any criteria that can be passed to L</find_subscriptions> that will identify
+a single subscription.  For instance:
+
+	# by "license"
+	my $licensed_image = $customer->license_image(
+		image_id     => $image_id,
+		size         => $size,
+		subscription => { license => 'standard' }
+	);
+
+	# by "id"
+	my $licensed_image = $customer->license_image(
+		image_id     => $image_id,
+		size         => $size,
+		subscription => { id => 63746273 }
+	);
+
+	# or explicitly, with a subscription object
+	my $enhanced = $customer->subscription( license => 'enhanced' );
+	my $licensed_image = $customer->license_image(
+		image_id     => $image_id,
+		size         => $size,
+		subscription => $enhanced
+	);
+
+=cut
+
+sub license_image {
+	my $self     = shift;
+	my %args     = @_;
+
+	my $image_id = $args{image_id} or croak "Must specify image_id to license";
+	my $metadata = $args{metadata} || {purchase_order => '', job => '', client => '', other => ''};
+	my $size     = $args{size};
+
+	my $single_finder = sub {
+		my %criteria = @_;
+		my @matching = $self->find_subscriptions( %criteria, is_active => 1 );
+		if ( @matching == 0 ) {
+			croak "Unable to find a subscription to license images";
+		} elsif ( @matching > 1 ) {
+			croak "You have more than one active subscription.  Please provide a WWW::Shutterstock::Subscription object or specify unique critiria to identify which subscription you would like to use (i.e. { license => 'standard' } or { id => 26374582 } )";
+		}
+		return $matching[0];
+	};
+
+
+	my $subscription;
+	if(my $sub_arg = $args{subscription}){
+		if(!ref($sub_arg)){
+			$subscription = $self->subscription( id => $sub_arg );
+		} elsif(ref($sub_arg) eq 'HASH'){
+			$subscription = $single_finder->( %$sub_arg );
+		} elsif(eval { $sub_arg->isa('WWW::Shutterstock::Customer') }){
+			$subscription = $sub_arg;
+		}
+	} else {
+		$subscription = $single_finder->();
+	}
+
+	if(!$subscription){
+		croak "Must specify a subscription to license images under";
+	}
+
+	my @valid_sizes = $subscription->sizes_for_licensing;
+	if(!$size && @valid_sizes == 1){
+		$size = $valid_sizes[0];
+	}
+	croak "Must specify size of image to license" if !$size;
+
+	if ( !grep { $_ eq $size } @valid_sizes ) {
+		croak "Invalid size '$size', please specify a valid size: " . join(", ", @valid_sizes);
+	}
+
+	my $format = $size eq 'vector' ? 'eps' : 'jpg';
+	my $client = $self->client;
+
+	$client->POST(
+		sprintf(
+			'/subscriptions/%s/images/%s/sizes/%s.json',
+			$subscription->id, $image_id, $size
+		),
+		$self->with_auth_params(
+			format   => $format,
+			metadata => encode_json($metadata),
+		)
+	);
+
+	return WWW::Shutterstock::LicensedImage->new($client->process_response);
+}
+
 1;
 
 =head1 SYNOPSIS
@@ -195,9 +295,22 @@ sub downloads {
 	my $lightbox = $customer->lightbox(123);
 
 	my $subscriptions = $customer->subscriptions;
-	my $premier_subscription = $customer->subscription(license => 'premier');
+	my $enhanced_subscription = $customer->subscription(license => 'enhanced');
 
 	my $download_history = $customer->downloads;
+
+	# license an image (if you only have a single active subscription)
+	my $licensed_image = $customer->license_image(
+		image_id => 59915404,
+		size     => 'huge'
+	);
+
+	# license an image (if you have more than one active subscription)
+	my $licensed_image = $customer->license_image(
+		image_id     => 59915404,
+		size         => 'huge',
+		subscription => { license => 'standard' }
+	);
 
 =head1 DESCRIPTION
 
