@@ -37,43 +37,6 @@ can_ok $customer, 'subscriptions';
 	is $customer->find_subscriptions(license => sub { 0 }), 0, 'callback filter';
 	ok !eval {$customer->find_subscriptions(bogus => 'blah'); 1}, 'dies OK';
 	like $@, qr{bogus}, 'errors informatively';
-
-	$guard->mock('POST', sub {
-		my($self, $url, $content) = @_;
-		is $url, q{/subscriptions/2/images/1/sizes/medium.json}, 'correct URL';
-		like $content, qr{format=jpg}, 'has format';
-		like $content, qr{auth_token=123}, 'has auth_token';
-		like $content, qr{metadata=%7B%22key}, 'has metadata';
-		return $self->response(
-			response(
-				200,
-				'{"photo_id":"14184","thumb_large":{"url":"http://thumb10.shutterstock.com/photos/thumb_large/yoga/IMG_0095.JPG","img":"http://thumb10.shutterstock.com/photos/thumb_large/yoga/IMG_0095.JPG"},"allotment_charge":0,"download":{"url":"http://download.shutterstock.com/gatekeeper/testing/shutterstock_1.jpg"}}
-				'
-			)
-		);
-	});
-
-	eval {
-		$customer->subscription( license => 'premier_digital' )->license_image( image_id => 1, size => 'bogus' );
-		ok 0, 'should die';
-	} or do {
-		like $@, qr{invalid size.*bogus}, 'errors on invalid size';
-	};
-	my $image = $customer->subscription(license => 'premier_digital')->license_image(image_id => 1, size => 'medium', metadata => { key => 'value' });
-	my $lwp = Test::MockModule->new('LWP::UserAgent');
-	my $desired_dest;
-	$lwp->mock('request', sub {
-		my($self, $request, $dest) = @_;
-		is $request->uri, 'http://download.shutterstock.com/gatekeeper/testing/shutterstock_1.jpg', 'has correct download URL';
-		is $dest, $desired_dest, 'has correct destination: ' . ($dest || '[undef]');
-		return response( 200, 'raw bytes' );
-	});
-	$image->download( file => $desired_dest = '/tmp/foo');
-	$desired_dest = './shutterstock_1.jpg';
-	is $image->download(directory => './'), $desired_dest, 'returns path to file';
-	$desired_dest = undef;
-	is $image->download, 'raw bytes', 'returns raw bytes';
-
 }
 
 done_testing;

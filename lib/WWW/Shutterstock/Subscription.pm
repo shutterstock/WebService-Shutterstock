@@ -33,35 +33,12 @@ foreach my $f(@fields){
 }
 
 
-sub license_image {
-	my $self     = shift;
-	my %args     = @_;
-	my $image_id = $args{image_id} or croak "Must specify image_id to license";
-	my $size     = $args{size} or croak "Must specify size of image to license";
-	my $metadata = $args{metadata} || {purchase_order => '', job => '', client => '', other => ''};
-
-	my @valid_sizes =
-	  map { $_->{name} }
+sub sizes_for_licensing {
+	my $self = shift;
+	return
+	  map  { $_->{name} }
 	  grep { $_->{name} ne 'supersize' && $_->{format} ne 'tiff' }
 	  values %{ $self->sizes || {} };
-	if ( @valid_sizes && !grep { $_ eq $size } @valid_sizes ) {
-		croak "invalid size '$size' (valid options: "
-		  . ( join ", ", sort @valid_sizes ) . ")";
-	}
-
-	my $format   = $size eq 'vector' ? 'eps' : 'jpg';
-	my $client   = $self->client;
-	$client->POST(
-		sprintf(
-			'/subscriptions/%s/images/%s/sizes/%s.json',
-			$self->id, $image_id, $size
-		),
-		$self->with_auth_params(
-			format   => $format,
-			metadata => encode_json($metadata),
-		)
-	);
-	return WWW::Shutterstock::LicensedImage->new($client->process_response);
 }
 
 
@@ -109,9 +86,10 @@ version 0.001
 
 =head1 METHODS
 
-=head2 license_image( image_id => $id, size => $size )
+=head2 sizes_for_licensing
 
-Licenses a specific image in the requested size.  Returns a L<WWW::Shutterstock::LicensedImage> object.
+Returns a list of sizes that can be specified when licensing an image
+(see L<WWW::Shutterstock::Customer/license_image>).
 
 =head2 is_active
 

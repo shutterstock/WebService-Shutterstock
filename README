@@ -20,25 +20,7 @@ SYNOPSIS
             my $image = $shutterstock->image( 59915404 );
 
             # certain actions require credentials for a specific customer account
-            my $account = $shutterstock->auth( username => "myuser", password => "mypassword" );
-
-            # history of downloaded images across all subscriptions
-            my $history = $account->downloads;
-
-            my $subscription = $account->subscription( license => 'standard' );
-            my $license = $subscription->license_image( image_id => 59915404, size => 'medium' );
-
-            # save the file locally as /my/photos/shutterstock_59915404.jpg
-            $license->download( directory => "/my/photos" );
-
-            # or to a specific file
-            $license->download( file => "/my/photos/hummingbird.jpg" );
-
-            # returns the raw bytes of the image
-            my $bytes = $license->download;
-
-            # save the file locally as /my/photos/favorite-pic.jpg
-            $license->save("/my/photos/favorite-pic.jpg");
+            my $customer = $shutterstock->auth( username => $customer, password => $password );
 
 DESCRIPTION
     This module provides an easy way to interact with the Shutterstock, Inc.
@@ -48,24 +30,50 @@ DESCRIPTION
 
     While there are some actions you can perform with this object (as shown
     under the "METHODS" section), many API operations are done within the
-    context of a specific user/account or a specific subscription. Some of
-    these operations are shown in the "SYNOPSIS" here but full documentation
-    can be found in the module that implements the method (i.e.
-    WWW::Shutterstock::Customer, WWW::Shutterstock::Subscription,
-    WWW::Shutterstock::LicensedImage, etc).
+    context of a specific user/account or a specific subscription. Below are
+    some additional examples of how to use this set of API modules. You will
+    find more examples and documentation in the related modules as well as
+    the "examples" directory in the source of the distribution.
 
-   Errors
-    If you provide an invalid "api_username" or "api_key", the first request
-    executed will die with a WWW::Shutterstock::Exception object. This
-    exception object should have the necessary information for you to
-    diagnose what exactly went wrong (including the full request and
-    response objects that preceded the error). WWW::Shutterstock::Exception
-    objects will be thrown on unexpected errors as well.
+   Licensing and Downloading
+    Licensing images happens in the context of a WWW::Shutterstock::Customer
+    object. For example:
+
+            my $licensed_image = $customer->license_image(
+                    image_id => 59915404,
+                    size     => 'medium'
+            );
+
+    If you have more than one active subscription, you will need to specify
+    which subscription to license the image under. Please see
+    "license_image" in WWW::Shutterstock::Customer for more details.
+
+    Once you have a licensed image, you can then download the image:
+
+            $licensed_image->download(file => '/my/photos/hummingbird.jpg');
+
+    Every image licensed under your account (whether through
+    shutterstock.com or the API) can be retrieved using the customer object
+    as well:
+
+            my $downloads = $customer->downloads;
+
+   Lightboxes
+    Lightbox retrieval starts with a customer as well but most methods are
+    documented in the WWW::Shutterstock::Lightbox module. Here's a short
+    example:
+
+            my $lightboxes = $customer->lightboxes;
+            my($favorites) = grep {$_->name eq 'Favorites'} @$lightboxes;
+            $favorites->add_image(59915404);
+
+            my $favorite_images = $favorite->images;
 
 METHODS
   new( api_username => $api_username, api_key => $api_key )
     Constructor method, requires both the "api_username" and "api_key"
-    parameters be passed in.
+    parameters be passed in. If you provide invalid values that the API
+    doesn't recognize, the first API call you make will throw an exception
 
   auth(username => $username, password => $password)
     Authenticate for a specific customer account. Returns a
@@ -88,6 +96,13 @@ METHODS
   image($image_id)
     Performs a lookup on a single image. Returns a WWW::Shutterstock::Image
     object (or "undef" if the image doesn't exist).
+
+ERROR HANDLING
+    If an API call fails in an unexpected way, an exception object (see
+    WWW::Shutterstock::Exception) will be thrown. This object should have
+    all the necessary information for you to handle the error if you choose
+    but also stringifies to something informative enough to be useful as
+    well.
 
 AUTHOR
     Brian Phillips <bphillips@cpan.org>

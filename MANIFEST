@@ -30,6 +30,7 @@ t/04-lightboxes.t
 t/05-downloads.t
 t/06-subscriptions.t
 t/07-search.t
+t/08-licensing.t
 t/51-lightbox.t
 t/52-image.t
 t/53-exception.t

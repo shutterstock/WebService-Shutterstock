@@ -50,6 +50,7 @@ sub delete_image {
 		sprintf( '/lightboxes/%s/images/%s.json', $self->id, $image_id ),
 		$self->with_auth_params( username => $self->username )
 	);
+	delete $self->{_images};
 	return $client->process_response;
 }
 
@@ -69,6 +70,7 @@ sub add_image {
 			)
 		)
 	);
+	delete $self->{_images};
 	return $client->process_response;
 }
 

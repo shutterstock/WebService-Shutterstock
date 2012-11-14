@@ -15,6 +15,7 @@ can_ok $customer, 'lightboxes';
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
+	my $expected_get_url = qr'/customers/abc/lightboxes/extended.json\?';
 	$guard->mock('GET', sub {
 		my($self, $url) = @_;
 		like $url, qr'/customers/abc/lightboxes/extended.json\?', 'correct URL';
@@ -33,6 +34,14 @@ can_ok $customer, 'lightboxes';
 		like $url, qr{auth_token=123}, 'has username (PUT)';
 	});
 	$lightboxes->[0]->add_image(123);
+	$guard->mock('GET', sub {
+		my($self, $url) = @_;
+		like $url, qr'/lightboxes/1/extended.json\?', 'correct URL';
+		like $url, qr{auth_token=123}, 'includes auth_token';
+		return $self->{_res} = response(200, '{"lightbox_id":1,"lightbox_name":"test","images":[{"image_id":1,"sizes":{"huge":{"height":100,"width":100}}}]}');
+	});
+	is $lightboxes->[0]->{_images}, undef, 'cleared images';
+	isa_ok $lightboxes->[0]->_images, 'ARRAY';
 
 	$guard->mock('DELETE' => sub {
 		my($self, $url) = @_;
@@ -41,6 +50,8 @@ can_ok $customer, 'lightboxes';
 		like $url, qr{auth_token=123}, 'has username (DELETE)';
 	});
 	$lightboxes->[0]->delete_image(123);
+	is $lightboxes->[0]->{_images}, undef, 'cleared images';
+	isa_ok $lightboxes->[0]->_images, 'ARRAY';
 }
 
 {
