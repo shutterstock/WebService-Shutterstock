@@ -135,7 +135,7 @@ sub license_image {
 			$subscription = $self->subscription( id => $sub_arg );
 		} elsif(ref($sub_arg) eq 'HASH'){
 			$subscription = $single_finder->( %$sub_arg );
-		} elsif(eval { $sub_arg->isa('WWW::Shutterstock::Customer') }){
+		} elsif(eval { $sub_arg->isa('WWW::Shutterstock::Subscription') }){
 			$subscription = $sub_arg;
 		}
 	} else {
