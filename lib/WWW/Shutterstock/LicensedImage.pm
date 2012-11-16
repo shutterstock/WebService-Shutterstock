@@ -5,6 +5,7 @@ package WWW::Shutterstock::LicensedImage;
 use strict;
 use warnings;
 use Moo;
+use Carp qw(croak);
 use LWP::Simple;
 use WWW::Shutterstock::Exception;
 
@@ -50,6 +51,9 @@ the same name already exists.
 sub download {
 	my $self = shift;
 	my %args = @_;
+	my @unknown_args = grep { !/^(file|directory)$/ } keys %args;
+
+	croak "Invalid args: @unknown_args (expected either 'file' or 'download')" if @unknown_args;
 
 	my $url = $self->download_url;
 	my $destination;
@@ -61,7 +65,9 @@ sub download {
 	} elsif($args{file}){
 		$destination = $args{file};
 	}
-
+	if(!defined $destination && !defined wantarray){
+		croak "Refusing to download image in void context without specifying a destination file or directory (specify ->download(file => \$some_file) or ->download(directory => \$some_dir)"; 
+	}
 	my $ua = LWP::UserAgent->new;
 	my $response = $ua->get( $url, ( $destination ? ( ':content_file' => $destination ) : () ) );
 	if(my $died = $response->header('X-Died') ){
