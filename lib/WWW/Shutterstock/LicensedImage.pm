@@ -32,7 +32,7 @@ sub BUILDARGS {
 sub download {
 	my $self = shift;
 	my %args = @_;
-	my @unknown_args = grep { /^(file|directory)$/ } keys %args;
+	my @unknown_args = grep { !/^(file|directory)$/ } keys %args;
 
 	croak "Invalid args: @unknown_args (expected either 'file' or 'download')" if @unknown_args;
 
