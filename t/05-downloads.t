@@ -15,10 +15,16 @@ can_ok $customer, 'downloads';
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
+	my $expected_page;
 	$guard->mock('GET', sub {
 		my($self, $url) = @_;
 		like $url, qr'/customers/abc/images/downloads.json\?', 'correct URL';
 		like $url, qr{auth_token=123}, 'includes auth_token';
+		if(defined $expected_page){
+			like $url, qr{page_number=$expected_page}, "has page_number param ($expected_page)";
+		} else {
+			unlike $url, qr{page_number=}, 'has no page_number param';
+		}
 		return $self->response(
 			response(
 				200,
@@ -28,6 +34,8 @@ can_ok $customer, 'downloads';
 	});
 	my $downloads = $customer->downloads;
 	ok exists $downloads->{123123}, 'has subscription 123123';
+	$customer->downloads(page_number => $expected_page = 0);
+	$customer->downloads(page_number => $expected_page = 1);
 }
 
 done_testing;

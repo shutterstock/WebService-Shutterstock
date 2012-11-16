@@ -27,13 +27,16 @@ usage() if $help;
 my $shutterstock = WWW::Shutterstock->new( api_username => $api_user, api_key => $api_key );
 my $user = $shutterstock->auth( username => $username, password => $password );
 
-my @subscriptions = $user->find_subscriptions(%subscription_filter);
-if(@subscriptions != 1){
-	my $description = join ", ", map { sprintf('%s (ID: %d)', $_->license, $_->id) } @subscriptions;
-	die "Found @{[ scalar @subscriptions ]} matching subscriptions: $description.  Please specify a single subscription (i.e. --subscription id=XYZ or --subscription license=ABC)\n"; 
-}
-my($subscription) = shift @subscriptions;
-my $licensed_image = $subscription->license_image( image_id => $image_id, size => $size, (keys %metadata ? (metadata => \%metadata) : () ) );
+my $licensed_image = $user->license_image(
+	image_id => $image_id,
+	size     => $size,
+	( keys %metadata ? ( metadata => \%metadata ) : () ),
+	(
+		keys %subscription_filter
+		? ( subscription => \%subscription_filter )
+		: ()
+	)
+);
 
 my $saved;
 if ($directory) {
@@ -52,7 +55,7 @@ if($saved){
 sub usage {
 	my $error = shift;
 	print <<"_USAGE_";
-usage: $0 --api-user justme --api-key abc123 --username my_user --password my_password --image-id 59915404 --size medium --directory .
+usage: $0 --api-user justme --api-key abc123 --username my_user --password my_password --image 59915404 --size medium --directory .
 _USAGE_
 	exit $error || 0;
 }

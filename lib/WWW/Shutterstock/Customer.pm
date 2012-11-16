@@ -101,9 +101,10 @@ sub lightbox {
 
 sub downloads {
 	my $self = shift;
+	my %args = @_;
 	$self->client->GET(
 		sprintf( '/customers/%s/images/downloads.json', $self->username ),
-		$self->with_auth_params );
+		$self->with_auth_params(%args) );
 	return $self->client->process_response;
 }
 
@@ -278,8 +279,10 @@ API currently returns an HTTP status of C<500> on an unknown lightbox ID
 
 =head2 downloads
 
-Retrieve the download history for this customer account.  The data
-returned will look something like this:
+Retrieve the download history for this customer account.  You can
+specify a C<page_number> argument if you prefer to retrieve a single
+page of results (starting with page C<0>).  The data returned will look
+something like this:
 
 	[
 		{

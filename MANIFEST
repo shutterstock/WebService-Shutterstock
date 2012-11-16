@@ -22,6 +22,7 @@ lib/WWW/Shutterstock/Lightbox.pm
 lib/WWW/Shutterstock/SearchResult/Item.pm
 lib/WWW/Shutterstock/SearchResults.pm
 lib/WWW/Shutterstock/Subscription.pm
+shutterstock_59915404.jpg
 t/00-compile.t
 t/01-basic.t
 t/02-auth.t
