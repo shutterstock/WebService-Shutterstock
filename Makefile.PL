@@ -20,10 +20,10 @@ my %WriteMakefileArgs = (
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
   },
-  "DISTNAME" => "WWW-Shutterstock",
+  "DISTNAME" => "WebService-Shutterstock",
   "EXE_FILES" => [],
   "LICENSE" => "perl",
-  "NAME" => "WWW::Shutterstock",
+  "NAME" => "WebService::Shutterstock",
   "PREREQ_PM" => {
     "Carp" => 0,
     "JSON" => 0,

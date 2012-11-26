@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "WWW-Shutterstock",
+   "name" : "WebService-Shutterstock",
    "prereqs" : {
       "configure" : {
          "requires" : {
@@ -46,10 +46,14 @@
    },
    "release_status" : "stable",
    "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/brianphillips/WebService-Shutterstock/issues"
+      },
+      "homepage" : "http://api.shutterstock.com",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/brianphillips/WWW-Shutterstock.git",
-         "web" : "https://github.com/brianphillips/WWW-Shutterstock"
+         "url" : "git://github.com/brianphillips/WebService-Shutterstock.git",
+         "web" : "https://github.com/brianphillips/WebService-Shutterstock"
       }
    },
    "version" : "0.001",

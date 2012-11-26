@@ -15,7 +15,7 @@ license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
-name: WWW-Shutterstock
+name: WebService-Shutterstock
 requires:
   Carp: 0
   JSON: 0
@@ -30,6 +30,8 @@ requires:
   version: 0
   warnings: 0
 resources:
-  repository: git://github.com/brianphillips/WWW-Shutterstock.git
+  bugtracker: https://github.com/brianphillips/WebService-Shutterstock/issues
+  homepage: http://api.shutterstock.com
+  repository: git://github.com/brianphillips/WebService-Shutterstock.git
 version: 0.001
 x_authority: cpan:BPHILLIPS

@@ -97,7 +97,7 @@ String error message.  Often, the body of the HTTP response that errored out.
 =head2 caller_info
 
 A HashRef of information (package, file, line) of where this exception
-originated (in non-WWW-Shutterstock land).
+originated (in non-WebService-Shutterstock land).
 
 =head1 METHODS
 
