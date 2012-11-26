@@ -1,9 +1,9 @@
-package WWW::Shutterstock::Subscription;
+package WebService::Shutterstock::Subscription;
 BEGIN {
-  $WWW::Shutterstock::Subscription::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::Subscription::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Subscription::VERSION = '0.001';
+  $WebService::Shutterstock::Subscription::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a subscription for a specific Shutterstock customer
@@ -12,10 +12,10 @@ use strict;
 use warnings;
 use Moo;
 use JSON qw(encode_json);
-use WWW::Shutterstock::LicensedImage;
+use WebService::Shutterstock::LicensedImage;
 use Carp qw(croak);
 
-with 'WWW::Shutterstock::AuthedClient';
+with 'WebService::Shutterstock::AuthedClient';
 
 
 has id => ( is => 'ro', required => 1, init_arg => 'subscription_id' );
@@ -60,7 +60,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::Subscription - Class representing a subscription for a specific Shutterstock customer
+WebService::Shutterstock::Subscription - Class representing a subscription for a specific Shutterstock customer
 
 =head1 VERSION
 
@@ -89,7 +89,7 @@ version 0.001
 =head2 sizes_for_licensing
 
 Returns a list of sizes that can be specified when licensing an image
-(see L<WWW::Shutterstock::Customer/license_image>).
+(see L<WebService::Shutterstock::Customer/license_image>).
 
 =head2 is_active
 

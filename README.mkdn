@@ -1,6 +1,6 @@
 # NAME
 
-WWW::Shutterstock - Easy access to Shutterstock's public API
+WebService::Shutterstock - Easy access to Shutterstock's public API
 
 # VERSION
 
@@ -8,7 +8,7 @@ version 0.001
 
 # SYNOPSIS
 
-	my $shutterstock = WWW::Shutterstock->new(
+	my $shutterstock = WebService::Shutterstock->new(
 		api_username => 'justme',
 		api_key      => 'abcdef1234567890'
 	);
@@ -41,7 +41,7 @@ well as the `examples` directory in the source of the distribution.
 ### Licensing and Downloading
 
 Licensing images happens in the context of a
-[WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer) object.  For example:
+[WebService::Shutterstock::Customer](http://search.cpan.org/perldoc?WebService::Shutterstock::Customer) object.  For example:
 
 	my $licensed_image = $customer->license_image(
 		image_id => 59915404,
@@ -50,24 +50,24 @@ Licensing images happens in the context of a
 
 If you have more than one active subscription, you will need to
 specify which subscription to license the image under.  Please see
-["license\_image" in WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer#license\_image) for more details.
+["license\_image" in WebService::Shutterstock::Customer](http://search.cpan.org/perldoc?WebService::Shutterstock::Customer#license\_image) for more details.
 
-Once you have a [licensed image](http://search.cpan.org/perldoc?WWW::Shutterstock::LicensedImage),
+Once you have a [licensed image](http://search.cpan.org/perldoc?WebService::Shutterstock::LicensedImage),
 you can then download the image:
 
 	$licensed_image->download(file => '/my/photos/hummingbird.jpg');
 
 Every image licensed under your account (whether through shutterstock.com or the
-API) can be retrieved using the [customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer)
+API) can be retrieved using the [customer](http://search.cpan.org/perldoc?WebService::Shutterstock::Customer)
 object as well:
 
 	my $downloads = $customer->downloads;
 
 ### Lightboxes
 
-Lightbox retrieval starts with a [customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer)
+Lightbox retrieval starts with a [customer](http://search.cpan.org/perldoc?WebService::Shutterstock::Customer)
 as well but most methods are documented in the
-[WWW::Shutterstock::Lightbox](http://search.cpan.org/perldoc?WWW::Shutterstock::Lightbox) module.  Here's a short example:
+[WebService::Shutterstock::Lightbox](http://search.cpan.org/perldoc?WebService::Shutterstock::Lightbox) module.  Here's a short example:
 
 	my $lightboxes = $customer->lightboxes;
 	my($favorites) = grep {$_->name eq 'Favorites'} @$lightboxes;
@@ -86,8 +86,8 @@ doesn't recognize, the first API call you make will throw an exception
 ## auth(username => $username, password => $password)
 
 Authenticate for a specific customer account.  Returns a
-[WWW::Shutterstock::Customer](http://search.cpan.org/perldoc?WWW::Shutterstock::Customer) object.  If authentication fails, an
-exception is thrown (see [WWW::Shutterstock::Exception](http://search.cpan.org/perldoc?WWW::Shutterstock::Exception) and ["ERRORS"](#ERRORS)
+[WebService::Shutterstock::Customer](http://search.cpan.org/perldoc?WebService::Shutterstock::Customer) object.  If authentication fails, an
+exception is thrown (see [WebService::Shutterstock::Exception](http://search.cpan.org/perldoc?WebService::Shutterstock::Exception) and ["ERRORS"](#ERRORS)
 section for more information).
 
 This is the main entry point for any operation dealing with subscriptions,
@@ -99,16 +99,16 @@ Returns a list of photo categories (useful for specifying a category\_id when se
 
 ## search(%search\_query)
 
-Perform a search.  Accepts any params documented here: [http://api.shutterstock.com/\#imagessearch](http://api.shutterstock.com/\#imagessearch).  Returns a [WWW::Shutterstock::SearchResults](http://search.cpan.org/perldoc?WWW::Shutterstock::SearchResults) object.
+Perform a search.  Accepts any params documented here: [http://api.shutterstock.com/\#imagessearch](http://api.shutterstock.com/\#imagessearch).  Returns a [WebService::Shutterstock::SearchResults](http://search.cpan.org/perldoc?WebService::Shutterstock::SearchResults) object.
 
 ## image($image\_id)
 
-Performs a lookup on a single image.  Returns a [WWW::Shutterstock::Image](http://search.cpan.org/perldoc?WWW::Shutterstock::Image) object (or `undef` if the image doesn't exist).
+Performs a lookup on a single image.  Returns a [WebService::Shutterstock::Image](http://search.cpan.org/perldoc?WebService::Shutterstock::Image) object (or `undef` if the image doesn't exist).
 
 # ERROR HANDLING
 
 If an API call fails in an unexpected way, an exception object (see
-[WWW::Shutterstock::Exception](http://search.cpan.org/perldoc?WWW::Shutterstock::Exception)) will be thrown.  This object should
+[WebService::Shutterstock::Exception](http://search.cpan.org/perldoc?WebService::Shutterstock::Exception)) will be thrown.  This object should
 have all the necessary information for you to handle the error if you
 choose but also stringifies to something informative enough to be
 useful as well.

@@ -1,9 +1,9 @@
-package WWW::Shutterstock::Client;
+package WebService::Shutterstock::Client;
 BEGIN {
-  $WWW::Shutterstock::Client::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::Client::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Client::VERSION = '0.001';
+  $WebService::Shutterstock::Client::VERSION = '0.001';
 }
 
 # ABSTRACT: Provides easy REST interactions with the Shutterstock API
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use Moo;
 use JSON qw(decode_json);
-use WWW::Shutterstock::Exception;
+use WebService::Shutterstock::Exception;
 
 extends 'REST::Client';
 
@@ -74,7 +74,7 @@ sub process_response {
 	my $self = shift;
 	my %handlers = (
 		204 => sub { 1 }, # empty response, but success
-		401 => sub { die WWW::Shutterstock::Exception->new(response => shift, error => "invalid api_username or api_key"); },
+		401 => sub { die WebService::Shutterstock::Exception->new(response => shift, error => "invalid api_username or api_key"); },
 		@_
 	);
 
@@ -85,7 +85,7 @@ sub process_response {
 	my $request = $response->request;
 
 	if(my $error = $response->header('X-Died')){
-		die WWW::Shutterstock::Exception->new(
+		die WebService::Shutterstock::Exception->new(
 			response => $response,
 			error    => sprintf( 'Transport error: %s', $error )
 		);
@@ -98,9 +98,9 @@ sub process_response {
 	} elsif($code <= 399){ # a redirect of some sort
 		return $self->responseHeader('Location');
 	} elsif($code <= 499){ # client-side error
-		die WWW::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
+		die WebService::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
 	} elsif($code >= 500){ # server-side error
-		die WWW::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
+		die WebService::Shutterstock::Exception->new( response => $response, error => sprintf('%s: %s', $response->status_line, $response->decoded_content) );
 	}
 }
 
@@ -121,7 +121,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::Client - Provides easy REST interactions with the Shutterstock API
+WebService::Shutterstock::Client - Provides easy REST interactions with the Shutterstock API
 
 =head1 VERSION
 
@@ -132,7 +132,7 @@ version 0.001
 This class extends the L<REST::Client> class and provides some additional
 convenience functions.
 
-You should not need to use this class to use L<WWW::Shutterstock>
+You should not need to use this class to use L<WebService::Shutterstock>
 
 =head1 METHODS
 

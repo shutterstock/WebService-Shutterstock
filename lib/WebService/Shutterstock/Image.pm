@@ -1,9 +1,9 @@
-package WWW::Shutterstock::Image;
+package WebService::Shutterstock::Image;
 BEGIN {
-  $WWW::Shutterstock::Image::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::Image::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Image::VERSION = '0.001';
+  $WebService::Shutterstock::Image::VERSION = '0.001';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API
@@ -12,9 +12,9 @@ use strict;
 use warnings;
 
 use Moo;
-use WWW::Shutterstock::DeferredData qw(deferred);
+use WebService::Shutterstock::DeferredData qw(deferred);
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 
 has id => ( is => 'ro', required => 1, init_arg => 'image_id' );
@@ -59,7 +59,7 @@ sub similar {
 	my $client = $self->client;
 	$client->GET(sprintf('/images/%s/similar.json', $self->id));
 	my $images = $client->process_response;
-	return [ map { $self->new_with_client( 'WWW::Shutterstock::Image', %$_ ) } @$images ];
+	return [ map { $self->new_with_client( 'WebService::Shutterstock::Image', %$_ ) } @$images ];
 }
 
 1;
@@ -70,7 +70,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::Image - Represent the set of information about a Shutterstock image as returned by the API
+WebService::Shutterstock::Image - Represent the set of information about a Shutterstock image as returned by the API
 
 =head1 VERSION
 
@@ -158,7 +158,7 @@ A URL for the main page on Shutterstock's site for this image.
 
 =head2 similar
 
-Returns an ArrayRef of L<WWW::Shutterstock::Image> objects similar to
+Returns an ArrayRef of L<WebService::Shutterstock::Image> objects similar to
 the current image.
 
 =head2 size

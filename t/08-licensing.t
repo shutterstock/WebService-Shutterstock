@@ -1,23 +1,23 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
-use WWW::Shutterstock::Subscription;
+use WebService::Shutterstock::Subscription;
 
-my $client = WWW::Shutterstock::Client->new;
-my $customer = WWW::Shutterstock::Customer->new(
+my $client = WebService::Shutterstock::Client->new;
+my $customer = WebService::Shutterstock::Customer->new(
 	auth_info     => { auth_token => 123, username => 'abc' },
 	client        => $client,
 	subscriptions => [
-		WWW::Shutterstock::Subscription->new(
+		WebService::Shutterstock::Subscription->new(
 			auth_info            => { auth_token => 123, username => 'abc' },
 			client               => $client,
 			subscription_id      => 1,
 			license              => 'premier',
 			unix_expiration_time => 0
 		),
-		WWW::Shutterstock::Subscription->new(
+		WebService::Shutterstock::Subscription->new(
 			auth_info       => { auth_token => 123, username => 'abc' },
 			client          => $client,
 			subscription_id => 2,
@@ -28,7 +28,7 @@ my $customer = WWW::Shutterstock::Customer->new(
 	]
 );
 
-isa_ok($customer, 'WWW::Shutterstock::Customer');
+isa_ok($customer, 'WebService::Shutterstock::Customer');
 
 can_ok $customer, 'license_image';
 

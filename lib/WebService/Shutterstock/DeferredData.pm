@@ -1,9 +1,9 @@
-package WWW::Shutterstock::DeferredData;
+package WebService::Shutterstock::DeferredData;
 BEGIN {
-  $WWW::Shutterstock::DeferredData::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::DeferredData::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::DeferredData::VERSION = '0.001';
+  $WebService::Shutterstock::DeferredData::VERSION = '0.001';
 }
 
 # ABSTRACT: Utility class for easy lazy-loading from the API
@@ -77,7 +77,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::DeferredData - Utility class for easy lazy-loading from the API
+WebService::Shutterstock::DeferredData - Utility class for easy lazy-loading from the API
 
 =head1 VERSION
 
@@ -87,7 +87,7 @@ version 0.001
 
 This utility class simply enables us to load some fields in a lazy fashion.
 
-You should not need to use this class in order to use L<WWW::Shutterstock>.
+You should not need to use this class in order to use L<WebService::Shutterstock>.
 
 =for Pod::Coverage deferred
 

@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
 
-my $client = WWW::Shutterstock::Client->new;
-my $customer = WWW::Shutterstock::Customer->new(
+my $client = WebService::Shutterstock::Client->new;
+my $customer = WebService::Shutterstock::Customer->new(
 	auth_info => { auth_token => 123, username => 'abc' },
 	client    => $client
 );
-isa_ok($customer, 'WWW::Shutterstock::Customer');
+isa_ok($customer, 'WebService::Shutterstock::Customer');
 
 can_ok $customer, 'lightboxes';
 
@@ -77,7 +77,7 @@ can_ok $customer, 'lightboxes';
 		}
 	});
 	my $lightbox = $customer->lightbox(1);
-	isa_ok $lightbox, 'WWW::Shutterstock::Lightbox';
+	isa_ok $lightbox, 'WebService::Shutterstock::Lightbox';
 	my $other = $customer->lightbox(2);
 	is $other, undef, "lightbox 2 does not exist";
 }

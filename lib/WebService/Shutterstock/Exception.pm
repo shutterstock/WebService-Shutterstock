@@ -1,9 +1,9 @@
-package WWW::Shutterstock::Exception;
+package WebService::Shutterstock::Exception;
 BEGIN {
-  $WWW::Shutterstock::Exception::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::Exception::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Exception::VERSION = '0.001';
+  $WebService::Shutterstock::Exception::VERSION = '0.001';
 }
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
@@ -35,7 +35,7 @@ sub BUILDARGS {
 	my $class = shift;
 	my $args = $class->SUPER::BUILDARGS(@_);
 	my $level = 0;
-	while(!$args->{caller_info} || $args->{caller_info}->{package} =~ /^(Sub::Quote|WWW::Shutterstock)/){
+	while(!$args->{caller_info} || $args->{caller_info}->{package} =~ /^(Sub::Quote|WebService::Shutterstock)/){
 		my @info = caller($level++) or last;
 		$args->{caller_info} = { package => $info[0], file => $info[1], line => $info[2] };
 	}
@@ -57,7 +57,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::Exception - Exception object to allow for easy error handling on HTTP errors
+WebService::Shutterstock::Exception - Exception object to allow for easy error handling on HTTP errors
 
 =head1 VERSION
 

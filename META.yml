@@ -30,8 +30,6 @@ requires:
   version: 0
   warnings: 0
 resources:
-  bugtracker: https://github.com/brianphillips/WWW-Shutterstock/issues
-  homepage: http://api.shutterstock.com
   repository: git://github.com/brianphillips/WWW-Shutterstock.git
 version: 0.001
 x_authority: cpan:BPHILLIPS

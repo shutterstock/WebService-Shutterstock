@@ -1,9 +1,9 @@
-package WWW::Shutterstock::SearchResult::Item;
+package WebService::Shutterstock::SearchResult::Item;
 BEGIN {
-  $WWW::Shutterstock::SearchResult::Item::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::SearchResult::Item::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::SearchResult::Item::VERSION = '0.001';
+  $WebService::Shutterstock::SearchResult::Item::VERSION = '0.001';
 }
 
 # ABSTRACT: Class representing a single search result from the Shutterstock API
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 use Moo;
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 
 has photo_id => ( is => 'ro' ); # sic, should be image_id to be consistant I think
@@ -27,7 +27,7 @@ has description => ( is => 'ro' );
 
 sub image {
 	my $self = shift;
-	return $self->new_with_client( 'WWW::Shutterstock::Image', image_id => $self->photo_id );
+	return $self->new_with_client( 'WebService::Shutterstock::Image', image_id => $self->photo_id );
 }
 
 1;
@@ -38,7 +38,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::SearchResult::Item - Class representing a single search result from the Shutterstock API
+WebService::Shutterstock::SearchResult::Item - Class representing a single search result from the Shutterstock API
 
 =head1 VERSION
 
@@ -58,7 +58,7 @@ version 0.001
 =head1 DESCRIPTION
 
 An object of this class provides information about a single search result.  When executing a search, an array
-of these objects is returned by the L<WWW::Shutterstock::SearchResults/"results"> method.
+of these objects is returned by the L<WebService::Shutterstock::SearchResults/"results"> method.
 
 =head1 ATTRIBUTES
 
@@ -90,7 +90,7 @@ An abbreviated description of this search result.
 
 =head2 image
 
-Returns a L<WWW::Shutterstock::Image> object for this search result.
+Returns a L<WebService::Shutterstock::Image> object for this search result.
 
 =head1 AUTHOR
 

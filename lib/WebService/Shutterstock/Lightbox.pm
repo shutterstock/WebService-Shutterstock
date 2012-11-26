@@ -1,9 +1,9 @@
-package WWW::Shutterstock::Lightbox;
+package WebService::Shutterstock::Lightbox;
 BEGIN {
-  $WWW::Shutterstock::Lightbox::AUTHORITY = 'cpan:BPHILLIPS';
+  $WebService::Shutterstock::Lightbox::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WWW::Shutterstock::Lightbox::VERSION = '0.001';
+  $WebService::Shutterstock::Lightbox::VERSION = '0.001';
 }
 
 # ABSTRACT: Representation of a lightbox in Shutterstock's public API
@@ -11,10 +11,10 @@ BEGIN {
 use strict;
 use version;
 use Moo;
-use WWW::Shutterstock::Image;
-use WWW::Shutterstock::DeferredData qw(deferred);
+use WebService::Shutterstock::Image;
+use WebService::Shutterstock::DeferredData qw(deferred);
 
-with 'WWW::Shutterstock::AuthedClient';
+with 'WebService::Shutterstock::AuthedClient';
 
 deferred(
 	['lightbox_name' => 'name', 'rw'],
@@ -77,7 +77,7 @@ sub add_image {
 
 sub images {
 	my $self = shift;
-	return [ map { $self->new_with_auth('WWW::Shutterstock::Image', %$_ ) } @{ $self->_images || [] } ];
+	return [ map { $self->new_with_auth('WebService::Shutterstock::Image', %$_ ) } @{ $self->_images || [] } ];
 }
 
 1;
@@ -88,7 +88,7 @@ __END__
 
 =head1 NAME
 
-WWW::Shutterstock::Lightbox - Representation of a lightbox in Shutterstock's public API
+WebService::Shutterstock::Lightbox - Representation of a lightbox in Shutterstock's public API
 
 =head1 VERSION
 
@@ -110,7 +110,7 @@ Returns a URL for access this lightbox without authenticating.
 
 =head2 images
 
-Returns a list of L<WWW::Shutterstock::Image> objects that are in this lightbox.
+Returns a list of L<WebService::Shutterstock::Image> objects that are in this lightbox.
 
 =head1 METHODS
 

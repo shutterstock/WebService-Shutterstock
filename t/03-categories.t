@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
 
-my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
+my $ss = WebService::Shutterstock->new(api_username => "test", api_key => 123);
 
 can_ok $ss, 'categories';
 {

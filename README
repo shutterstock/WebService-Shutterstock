@@ -1,11 +1,11 @@
 NAME
-    WWW::Shutterstock - Easy access to Shutterstock's public API
+    WebService::Shutterstock - Easy access to Shutterstock's public API
 
 VERSION
     version 0.001
 
 SYNOPSIS
-            my $shutterstock = WWW::Shutterstock->new(
+            my $shutterstock = WebService::Shutterstock->new(
                     api_username => 'justme',
                     api_key      => 'abcdef1234567890'
             );
@@ -36,8 +36,8 @@ DESCRIPTION
     the "examples" directory in the source of the distribution.
 
    Licensing and Downloading
-    Licensing images happens in the context of a WWW::Shutterstock::Customer
-    object. For example:
+    Licensing images happens in the context of a
+    WebService::Shutterstock::Customer object. For example:
 
             my $licensed_image = $customer->license_image(
                     image_id => 59915404,
@@ -46,7 +46,7 @@ DESCRIPTION
 
     If you have more than one active subscription, you will need to specify
     which subscription to license the image under. Please see
-    "license_image" in WWW::Shutterstock::Customer for more details.
+    "license_image" in WebService::Shutterstock::Customer for more details.
 
     Once you have a licensed image, you can then download the image:
 
@@ -60,8 +60,8 @@ DESCRIPTION
 
    Lightboxes
     Lightbox retrieval starts with a customer as well but most methods are
-    documented in the WWW::Shutterstock::Lightbox module. Here's a short
-    example:
+    documented in the WebService::Shutterstock::Lightbox module. Here's a
+    short example:
 
             my $lightboxes = $customer->lightboxes;
             my($favorites) = grep {$_->name eq 'Favorites'} @$lightboxes;
@@ -77,9 +77,9 @@ METHODS
 
   auth(username => $username, password => $password)
     Authenticate for a specific customer account. Returns a
-    WWW::Shutterstock::Customer object. If authentication fails, an
-    exception is thrown (see WWW::Shutterstock::Exception and "ERRORS"
-    section for more information).
+    WebService::Shutterstock::Customer object. If authentication fails, an
+    exception is thrown (see WebService::Shutterstock::Exception and
+    "ERRORS" section for more information).
 
     This is the main entry point for any operation dealing with
     subscriptions, image licensing, download history or lightboxes.
@@ -91,18 +91,19 @@ METHODS
   search(%search_query)
     Perform a search. Accepts any params documented here:
     <http://api.shutterstock.com/#imagessearch>. Returns a
-    WWW::Shutterstock::SearchResults object.
+    WebService::Shutterstock::SearchResults object.
 
   image($image_id)
-    Performs a lookup on a single image. Returns a WWW::Shutterstock::Image
-    object (or "undef" if the image doesn't exist).
+    Performs a lookup on a single image. Returns a
+    WebService::Shutterstock::Image object (or "undef" if the image doesn't
+    exist).
 
 ERROR HANDLING
     If an API call fails in an unexpected way, an exception object (see
-    WWW::Shutterstock::Exception) will be thrown. This object should have
-    all the necessary information for you to handle the error if you choose
-    but also stringifies to something informative enough to be useful as
-    well.
+    WebService::Shutterstock::Exception) will be thrown. This object should
+    have all the necessary information for you to handle the error if you
+    choose but also stringifies to something informative enough to be useful
+    as well.
 
 AUTHOR
     Brian Phillips <bphillips@cpan.org>

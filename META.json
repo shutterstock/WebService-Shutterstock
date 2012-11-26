@@ -46,10 +46,6 @@
    },
    "release_status" : "stable",
    "resources" : {
-      "bugtracker" : {
-         "web" : "https://github.com/brianphillips/WWW-Shutterstock/issues"
-      },
-      "homepage" : "http://api.shutterstock.com",
       "repository" : {
          "type" : "git",
          "url" : "git://github.com/brianphillips/WWW-Shutterstock.git",

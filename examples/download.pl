@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 
 my($api_user, $api_key, $username, $password, %subscription_filter, $image_id, $size, $file, $directory, %metadata, $help);
 GetOptions(
@@ -24,7 +24,7 @@ usage(-1) if !$file && !$directory;
 
 usage() if $help;
 
-my $shutterstock = WWW::Shutterstock->new( api_username => $api_user, api_key => $api_key );
+my $shutterstock = WebService::Shutterstock->new( api_username => $api_user, api_key => $api_key );
 my $user = $shutterstock->auth( username => $username, password => $password );
 
 my $licensed_image = $user->license_image(
