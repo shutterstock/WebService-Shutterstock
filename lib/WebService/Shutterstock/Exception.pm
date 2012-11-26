@@ -1,4 +1,4 @@
-package WWW::Shutterstock::Exception;
+package WebService::Shutterstock::Exception;
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
 
@@ -39,7 +39,7 @@ has error    => ( is => 'ro', required => 1 );
 =attr caller_info
 
 A HashRef of information (package, file, line) of where this exception
-originated (in non-WWW-Shutterstock land).
+originated (in non-WebService-Shutterstock land).
 
 =cut
 
@@ -53,7 +53,7 @@ sub BUILDARGS {
 	my $class = shift;
 	my $args = $class->SUPER::BUILDARGS(@_);
 	my $level = 0;
-	while(!$args->{caller_info} || $args->{caller_info}->{package} =~ /^(Sub::Quote|WWW::Shutterstock)/){
+	while(!$args->{caller_info} || $args->{caller_info}->{package} =~ /^(Sub::Quote|WebService::Shutterstock)/){
 		my @info = caller($level++) or last;
 		$args->{caller_info} = { package => $info[0], file => $info[1], line => $info[2] };
 	}

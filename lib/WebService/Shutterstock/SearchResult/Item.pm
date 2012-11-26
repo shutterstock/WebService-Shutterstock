@@ -1,4 +1,4 @@
-package WWW::Shutterstock::SearchResult::Item;
+package WebService::Shutterstock::SearchResult::Item;
 
 # ABSTRACT: Class representing a single search result from the Shutterstock API
 
@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use Moo;
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 =attr photo_id
 
@@ -45,13 +45,13 @@ has description => ( is => 'ro' );
 
 =method image
 
-Returns a L<WWW::Shutterstock::Image> object for this search result.
+Returns a L<WebService::Shutterstock::Image> object for this search result.
 
 =cut
 
 sub image {
 	my $self = shift;
-	return $self->new_with_client( 'WWW::Shutterstock::Image', image_id => $self->photo_id );
+	return $self->new_with_client( 'WebService::Shutterstock::Image', image_id => $self->photo_id );
 }
 
 1;
@@ -70,6 +70,6 @@ sub image {
 =head1 DESCRIPTION
 
 An object of this class provides information about a single search result.  When executing a search, an array
-of these objects is returned by the L<WWW::Shutterstock::SearchResults/"results"> method.
+of these objects is returned by the L<WebService::Shutterstock::SearchResults/"results"> method.
 
 =cut

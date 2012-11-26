@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
 
-my $client = WWW::Shutterstock::Client->new;
-my $customer = WWW::Shutterstock::Customer->new(
+my $client = WebService::Shutterstock::Client->new;
+my $customer = WebService::Shutterstock::Customer->new(
 	auth_info => { auth_token => 123, username => 'abc' },
 	client    => $client
 );
-isa_ok($customer, 'WWW::Shutterstock::Customer');
+isa_ok($customer, 'WebService::Shutterstock::Customer');
 
 can_ok $customer, 'subscriptions';
 
@@ -28,7 +28,7 @@ can_ok $customer, 'subscriptions';
 	});
 	my $subscriptions = $customer->subscriptions;
 	is @$subscriptions, 2, 'has subscriptions';
-	isa_ok $subscriptions->[0], 'WWW::Shutterstock::Subscription';
+	isa_ok $subscriptions->[0], 'WebService::Shutterstock::Subscription';
 	is $subscriptions->[0]->id, 1, 'has correct data';
 	ok $subscriptions->[0]->is_expired, 'is_expired';
 	ok !$subscriptions->[0]->is_active, 'is_active';

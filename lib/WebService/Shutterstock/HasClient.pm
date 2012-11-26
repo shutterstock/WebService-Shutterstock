@@ -1,4 +1,4 @@
-package WWW::Shutterstock::HasClient;
+package WebService::Shutterstock::HasClient;
 
 # ABSTRACT: Role managing a client attribute
 
@@ -8,7 +8,7 @@ use Moo::Role;
 
 =attr client
 
-The L<WWW::Shutterstock::Client> object contained within
+The L<WebService::Shutterstock::Client> object contained within
 
 =cut
 
@@ -28,10 +28,10 @@ sub new_with_client {
 
 =head1 DESCRIPTION
 
-This role serves a similar purpose as L<WWW::Shutterstock::AuthedClient>
+This role serves a similar purpose as L<WebService::Shutterstock::AuthedClient>
 by providing a simple way to create a new object with the C<client>
 object managed by this role.
 
-You should not need to use this role in order to use L<WWW::Shutterstock>.
+You should not need to use this role in order to use L<WebService::Shutterstock>.
 
 =cut

@@ -1,4 +1,4 @@
-package WWW::Shutterstock::DeferredData;
+package WebService::Shutterstock::DeferredData;
 
 # ABSTRACT: Utility class for easy lazy-loading from the API
 
@@ -69,7 +69,7 @@ sub deferred {
 
 This utility class simply enables us to load some fields in a lazy fashion.
 
-You should not need to use this class in order to use L<WWW::Shutterstock>.
+You should not need to use this class in order to use L<WebService::Shutterstock>.
 
 =for Pod::Coverage deferred
 

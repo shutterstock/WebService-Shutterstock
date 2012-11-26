@@ -1,14 +1,14 @@
-package WWW::Shutterstock::Lightbox;
+package WebService::Shutterstock::Lightbox;
 
 # ABSTRACT: Representation of a lightbox in Shutterstock's public API
 
 use strict;
 use version;
 use Moo;
-use WWW::Shutterstock::Image;
-use WWW::Shutterstock::DeferredData qw(deferred);
+use WebService::Shutterstock::Image;
+use WebService::Shutterstock::DeferredData qw(deferred);
 
-with 'WWW::Shutterstock::AuthedClient';
+with 'WebService::Shutterstock::AuthedClient';
 
 deferred(
 	['lightbox_name' => 'name', 'rw'],
@@ -93,13 +93,13 @@ sub add_image {
 
 =attr images
 
-Returns a list of L<WWW::Shutterstock::Image> objects that are in this lightbox.
+Returns a list of L<WebService::Shutterstock::Image> objects that are in this lightbox.
 
 =cut
 
 sub images {
 	my $self = shift;
-	return [ map { $self->new_with_auth('WWW::Shutterstock::Image', %$_ ) } @{ $self->_images || [] } ];
+	return [ map { $self->new_with_auth('WebService::Shutterstock::Image', %$_ ) } @{ $self->_images || [] } ];
 }
 
 1;

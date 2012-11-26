@@ -1,4 +1,4 @@
-package WWW::Shutterstock::AuthedClient;
+package WebService::Shutterstock::AuthedClient;
 
 # ABSTRACT: Role comprising a REST client with the necessary auth token information
 
@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use Moo::Role;
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 =attr auth_info
 
@@ -19,9 +19,9 @@ has auth_info => ( is => 'ro', required => 1 );
 =head1 DESCRIPTION
 
 This role provides convenience methods for managing an authenticated
-client.  It consumes the L<WWW::Shutterstock::HasClient> role.
+client.  It consumes the L<WebService::Shutterstock::HasClient> role.
 
-You should not need to use this role to use L<WWW::Shutterstock>
+You should not need to use this role to use L<WebService::Shutterstock>
 
 =cut
 

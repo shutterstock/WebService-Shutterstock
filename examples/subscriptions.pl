@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 
 my($api_user, $api_key, $username, $password, %subscription_filter, $help);
 GetOptions(
@@ -18,7 +18,7 @@ usage(-1) if grep { !defined($_) } ($api_user, $api_key, $username, $password);
 
 usage() if $help;
 
-my $shutterstock = WWW::Shutterstock->new( api_username => $api_user, api_key => $api_key );
+my $shutterstock = WebService::Shutterstock->new( api_username => $api_user, api_key => $api_key );
 my $user = $shutterstock->auth( username => $username, password => $password );
 
 my @active = $user->find_subscriptions(%subscription_filter, is_active => 1);

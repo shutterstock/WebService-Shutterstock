@@ -1,4 +1,4 @@
-package WWW::Shutterstock::LicensedImage;
+package WebService::Shutterstock::LicensedImage;
 
 # ABSTRACT: Allows for interogating and saving a licensed image from the Shutterstock API
 
@@ -7,7 +7,7 @@ use warnings;
 use Moo;
 use Carp qw(croak);
 use LWP::Simple;
-use WWW::Shutterstock::Exception;
+use WebService::Shutterstock::Exception;
 
 my @attrs = qw(photo_id thumb_large_url allotment_charge download_url);
 foreach my $attr(@attrs){
@@ -71,14 +71,14 @@ sub download {
 	my $ua = LWP::UserAgent->new;
 	my $response = $ua->get( $url, ( $destination ? ( ':content_file' => $destination ) : () ) );
 	if(my $died = $response->header('X-Died') ){
-		die WWW::Shutterstock::Exception->new(
+		die WebService::Shutterstock::Exception->new(
 			response => $response,
 			error    => "Unable to save image to $destination: $died"
 		);
 	} elsif($response->code == 200){
 		return $destination || $response->content;
 	} else {
-		die WWW::Shutterstock::Exception->new(
+		die WebService::Shutterstock::Exception->new(
 			response => $response,
 			error    => $response->status_line . ": unable to retrieve image",
 		);

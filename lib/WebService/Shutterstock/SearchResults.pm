@@ -1,13 +1,13 @@
-package WWW::Shutterstock::SearchResults;
+package WebService::Shutterstock::SearchResults;
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
 
 use strict;
 use warnings;
 use Moo;
-use WWW::Shutterstock::SearchResult::Item;
+use WebService::Shutterstock::SearchResult::Item;
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 sub BUILD { shift->_results_data } # eagar loading
 
@@ -53,7 +53,7 @@ sub sort_method { return shift->_results_data->{sort_method} }
 
 =method results
 
-Returns an ArrayRef of L<WWW::Shutterstock::SearchResult::Item> for this
+Returns an ArrayRef of L<WebService::Shutterstock::SearchResult::Item> for this
 page of search results.
 
 =cut
@@ -62,7 +62,7 @@ sub results {
 	my $self = shift;
 	return [
 		map {
-			$self->new_with_client( 'WWW::Shutterstock::SearchResult::Item', %$_ );
+			$self->new_with_client( 'WebService::Shutterstock::SearchResult::Item', %$_ );
 		}
 		@{ $self->_results_data->{results} || [] }
 	];
@@ -71,9 +71,9 @@ sub results {
 =method next_page
 
 Retrieves the next page of search results (represented as a
-L<WWW::Shutterstock::SearchResults> object).  This is just a shortcut
+L<WebService::Shutterstock::SearchResults> object).  This is just a shortcut
 for specifying a specific C<page_number> in the arguments to the
-L<search|WWW::Shutterstock/search> method.
+L<search|WebService::Shutterstock/search> method.
 
 =cut
 
@@ -82,7 +82,7 @@ sub next_page {
 	my $query = { %{ $self->query } };
 	$query->{page_number} ||= 0;
 	$query->{page_number}++;
-	return WWW::Shutterstock::SearchResults->new( client => $self->client, query => $query );
+	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => $query );
 }
 
 1;

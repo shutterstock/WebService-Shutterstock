@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
 
-my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
-isa_ok($ss, 'WWW::Shutterstock');
+my $ss = WebService::Shutterstock->new(api_username => "test", api_key => 123);
+isa_ok($ss, 'WebService::Shutterstock');
 
 can_ok $ss, 'client';
 
@@ -20,7 +20,7 @@ can_ok $ss, 'client';
 	ok $ss->client, 'client initialized';
 }
 
-$ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
+$ss = WebService::Shutterstock->new(api_username => "test", api_key => 123);
 {
 	my $guard = Test::MockModule->new('REST::Client');
 	$guard->mock('new', sub {

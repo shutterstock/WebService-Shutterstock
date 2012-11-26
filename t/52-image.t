@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock::Image;
+use WebService::Shutterstock::Image;
 use Test::MockModule;
-use WWW::Shutterstock::Client;
+use WebService::Shutterstock::Client;
 
-my $image = WWW::Shutterstock::Image->new( client => WWW::Shutterstock::Client->new, image_id => 1, sizes => {"huge" => {width => 1, height => 2}});
-isa_ok($image, 'WWW::Shutterstock::Image');
+my $image = WebService::Shutterstock::Image->new( client => WebService::Shutterstock::Client->new, image_id => 1, sizes => {"huge" => {width => 1, height => 2}});
+isa_ok($image, 'WebService::Shutterstock::Image');
 
 ok $image->size('huge'), 'has huge size';
 ok !$image->size('blah'), 'no blah size';

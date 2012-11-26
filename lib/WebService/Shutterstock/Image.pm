@@ -1,4 +1,4 @@
-package WWW::Shutterstock::Image;
+package WebService::Shutterstock::Image;
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API
 
@@ -6,9 +6,9 @@ use strict;
 use warnings;
 
 use Moo;
-use WWW::Shutterstock::DeferredData qw(deferred);
+use WebService::Shutterstock::DeferredData qw(deferred);
 
-with 'WWW::Shutterstock::HasClient';
+with 'WebService::Shutterstock::HasClient';
 
 =attr id
 
@@ -58,7 +58,7 @@ sub similar {
 	my $client = $self->client;
 	$client->GET(sprintf('/images/%s/similar.json', $self->id));
 	my $images = $client->process_response;
-	return [ map { $self->new_with_client( 'WWW::Shutterstock::Image', %$_ ) } @$images ];
+	return [ map { $self->new_with_client( 'WebService::Shutterstock::Image', %$_ ) } @$images ];
 }
 
 1;
@@ -117,7 +117,7 @@ Boolean
 
 =method similar
 
-Returns an ArrayRef of L<WWW::Shutterstock::Image> objects similar to
+Returns an ArrayRef of L<WebService::Shutterstock::Image> objects similar to
 the current image.
 
 =attr sizes

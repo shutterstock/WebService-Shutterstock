@@ -1,15 +1,15 @@
-package WWW::Shutterstock::Customer;
+package WebService::Shutterstock::Customer;
 
 # ABSTRACT: Class allowing API operations in the context of a specific customer
 
 use strict;
 use warnings;
 use Moo;
-use WWW::Shutterstock::Subscription;
+use WebService::Shutterstock::Subscription;
 use Carp qw(croak);
 use JSON qw(encode_json);
 
-with 'WWW::Shutterstock::AuthedClient';
+with 'WebService::Shutterstock::AuthedClient';
 
 =method account_id
 
@@ -28,7 +28,7 @@ sub _build_account_id {
 
 =method subscriptions
 
-Returns an ArrayRef of L<WWW::Shutterstock::Subscription> objects for this customer account.
+Returns an ArrayRef of L<WebService::Shutterstock::Subscription> objects for this customer account.
 
 =cut
 
@@ -37,7 +37,7 @@ sub _build_subscriptions {
 	my $self = shift;
 	$self->client->GET( sprintf( '/customers/%s/subscriptions.json', $self->username ), $self->with_auth_params );
 	my $subscriptions = $self->client->process_response;
-	return [ map { $self->new_with_auth( 'WWW::Shutterstock::Subscription', %$_ ) } @$subscriptions ]
+	return [ map { $self->new_with_auth( 'WebService::Shutterstock::Subscription', %$_ ) } @$subscriptions ]
 }
 
 =method subscription
@@ -59,9 +59,9 @@ sub subscription {
 
 =method find_subscriptions
 
-Retrieve a list of L<WWW::Shutterstock::Subscription> objects, based
+Retrieve a list of L<WebService::Shutterstock::Subscription> objects, based
 on the criteria passed in to the method. Filter criteria should have
-L<WWW::Shutterstock::Subscription> attribute names as keys with the value
+L<WebService::Shutterstock::Subscription> attribute names as keys with the value
 to be matched as the value.  Subscriptions that match ALL the provided
 criteria are returned as a list.  Some examples:
 
@@ -86,7 +86,7 @@ sub find_subscriptions {
 	my $filter = sub {
 		my $s = shift;
 		foreach my $m(keys %criteria){
-			croak "Invalid subscription filter key '$m': no such attribute on WWW::Shutterstock::Subscription" if !$s->can($m);
+			croak "Invalid subscription filter key '$m': no such attribute on WebService::Shutterstock::Subscription" if !$s->can($m);
 			my $value = $s->$m;
 			my $matcher = $criteria{$m};
 			if(ref $matcher eq 'CODE'){
@@ -105,7 +105,7 @@ sub find_subscriptions {
 
 =method lightboxes($get_extended_info)
 
-Returns an ArrayRef of L<WWW::Shutterstock::Lightbox> objects for this
+Returns an ArrayRef of L<WebService::Shutterstock::Lightbox> objects for this
 customer acount.  By default, it gets only the lightbox information and
 the list of image IDs in the lightbox.  If you would like to retrieve
 more details about those images (specifically sizes and thumbnail URLs)
@@ -125,12 +125,12 @@ sub lightboxes {
 		$self->with_auth_params
 	);
 	my $lightboxes = $self->client->process_response;
-	return [ map {$self->new_with_auth('WWW::Shutterstock::Lightbox', %$_) } @$lightboxes ];
+	return [ map {$self->new_with_auth('WebService::Shutterstock::Lightbox', %$_) } @$lightboxes ];
 }
 
 =method lightbox($id)
 
-Returns a specific lightbox (as a L<WWW::Shutterstock::Lightbox> object)
+Returns a specific lightbox (as a L<WebService::Shutterstock::Lightbox> object)
 for the given C<$id> (it must belong to this user).  If that lightbox
 doesn't exist, C<undef> will be returned.  Unfortunately, Shutterstock's
 API currently returns an HTTP status of C<500> on an unknown lightbox ID
@@ -141,10 +141,10 @@ API currently returns an HTTP status of C<500> on an unknown lightbox ID
 sub lightbox {
 	my $self = shift;
 	my $id = shift;
-	my $lightbox = $self->new_with_auth('WWW::Shutterstock::Lightbox', lightbox_id => $id);
+	my $lightbox = $self->new_with_auth('WebService::Shutterstock::Lightbox', lightbox_id => $id);
 	eval { $lightbox->load; 1 } or do {
 		my $e = $@;
-		if(eval { $e->isa('WWW::Shutterstock::Exception') } && ($e->code eq 404 || $e->code eq 500)){
+		if(eval { $e->isa('WebService::Shutterstock::Exception') } && ($e->code eq 404 || $e->code eq 500)){
 			$lightbox = undef;
 		} else {
 			die $e;
@@ -189,11 +189,11 @@ sub downloads {
 =method license_image(image_id => $image_id, size => $size)
 
 Licenses a specific image in the requested size.  Returns a
-L<WWW::Shutterstock::LicensedImage> object.
+L<WebService::Shutterstock::LicensedImage> object.
 
 If you have more than one active subscription, you will need to specify
 which subscription you would like to use for licensing with a C<subscription>
-argument.  You can pass in a L<WWW::Shutterstock::Subscription> object or
+argument.  You can pass in a L<WebService::Shutterstock::Subscription> object or
 any criteria that can be passed to L</find_subscriptions> that will identify
 a single subscription.  For instance:
 
@@ -235,7 +235,7 @@ sub license_image {
 		if ( @matching == 0 ) {
 			croak "Unable to find a subscription to license images";
 		} elsif ( @matching > 1 ) {
-			croak "You have more than one active subscription.  Please provide a WWW::Shutterstock::Subscription object or specify unique critiria to identify which subscription you would like to use (i.e. { license => 'standard' } or { id => 26374582 } )";
+			croak "You have more than one active subscription.  Please provide a WebService::Shutterstock::Subscription object or specify unique critiria to identify which subscription you would like to use (i.e. { license => 'standard' } or { id => 26374582 } )";
 		}
 		return $matching[0];
 	};
@@ -247,7 +247,7 @@ sub license_image {
 			$subscription = $self->subscription( id => $sub_arg );
 		} elsif(ref($sub_arg) eq 'HASH'){
 			$subscription = $single_finder->( %$sub_arg );
-		} elsif(eval { $sub_arg->isa('WWW::Shutterstock::Subscription') }){
+		} elsif(eval { $sub_arg->isa('WebService::Shutterstock::Subscription') }){
 			$subscription = $sub_arg;
 		}
 	} else {
@@ -282,7 +282,7 @@ sub license_image {
 		)
 	);
 
-	return WWW::Shutterstock::LicensedImage->new($client->process_response);
+	return WebService::Shutterstock::LicensedImage->new($client->process_response);
 }
 
 1;
@@ -318,6 +318,6 @@ sub license_image {
 =head1 DESCRIPTION
 
 This class provides access to API operations (download history, lightbox interaction, subscriptions, etc) that require an authenticated
-customer (via L<WWW::Shutterstock/"auth">).
+customer (via L<WebService::Shutterstock/"auth">).
 
 =cut

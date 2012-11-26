@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 use Test::More;
-use WWW::Shutterstock;
+use WebService::Shutterstock;
 use Test::MockModule;
 
-my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
+my $ss = WebService::Shutterstock->new(api_username => "test", api_key => 123);
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
@@ -21,8 +21,8 @@ my $ss = WWW::Shutterstock->new(api_username => "test", api_key => 123);
 		1;
 	} or do {
 		my $e = $@;
-		isa_ok($e, 'WWW::Shutterstock::Exception');
-		unlike("$e", qr/WWW::Shutterstock/, "stringifies to error");
+		isa_ok($e, 'WebService::Shutterstock::Exception');
+		unlike("$e", qr/WebService::Shutterstock/, "stringifies to error");
 		can_ok($e, 'response','code','method','uri' );
 		is($e->code, '400', 'exception has correct status code');
 		is $e->method, 'POST', 'correct HTTP method';
