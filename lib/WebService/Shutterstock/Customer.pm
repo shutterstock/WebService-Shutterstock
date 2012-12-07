@@ -157,8 +157,15 @@ sub lightbox {
 
 Retrieve the download history for this customer account.  You can
 specify a C<page_number> argument if you prefer to retrieve a single
-page of results (starting with page C<0>).  The data returned will look
-something like this:
+page of results (starting with page C<0>).  Or, you can fetch the
+C<redownloadable_state> of a particular image:
+
+	my $redownloadable_state = $customer->downloads(
+		image_id => 11024440,
+		field    => "redownloadable_state"
+	);
+
+The data returned will look something like this:
 
 	[
 		{
