@@ -1,6 +1,8 @@
 Revision history for WebService-Shutterstock
 
-0.002     2012-12-07 16:04:56 CST6CDT
+0.002     2012-12-07 16:06:54 CST6CDT
+	- added example of accessing the download history
+	- docs for download history parameters
 
 0.001     2012-12-04 16:15:42 CST6CDT
 	- Initial release
