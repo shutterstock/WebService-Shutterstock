@@ -169,7 +169,7 @@ object as well:
 
 	my $downloads = $customer->downloads;
 
-Or you can fetch one 'page' (40 items) of downloads. Pages start being numbered at 0.
+Or, you can fetch one "page" (40 items) of downloads. Pages start being numbered at 0.
 
 	my $page_two_of_downloads = $customer->downloads( page_number => 1 );
 
