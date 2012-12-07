@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::SearchResults::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::SearchResults::VERSION = '0.001';
+  $WebService::Shutterstock::SearchResults::VERSION = '0.002';
 }
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
@@ -69,7 +69,7 @@ WebService::Shutterstock::SearchResults - Class representing a single page of se
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 

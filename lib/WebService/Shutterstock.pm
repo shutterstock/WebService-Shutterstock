@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::VERSION = '0.001';
+  $WebService::Shutterstock::VERSION = '0.002';
 }
 
 # ABSTRACT: Easy access to Shutterstock's public API
@@ -109,7 +109,7 @@ WebService::Shutterstock - Easy access to Shutterstock's public API
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -168,6 +168,17 @@ API) can be retrieved using the L<customer|WebService::Shutterstock::Customer>
 object as well:
 
 	my $downloads = $customer->downloads;
+
+Or you can fetch one 'page' (40 items) of downloads. Pages start being numbered at 0.
+
+	my $page_two_of_downloads = $customer->downloads( page_number => 1 );
+
+Or, you can fetch the C<redownloadable_state> of a particular image.
+
+	my $redownloadable_state = $customer->downloads(
+		image_id => 11024440,
+		field    => "redownloadable_state"
+	);
 
 =head3 Lightboxes
 

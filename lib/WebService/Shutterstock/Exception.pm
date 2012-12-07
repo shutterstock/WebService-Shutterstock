@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::Exception::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::Exception::VERSION = '0.001';
+  $WebService::Shutterstock::Exception::VERSION = '0.002';
 }
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
@@ -61,7 +61,7 @@ WebService::Shutterstock::Exception - Exception object to allow for easy error h
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 

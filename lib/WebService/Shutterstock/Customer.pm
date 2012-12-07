@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::Customer::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::Customer::VERSION = '0.001';
+  $WebService::Shutterstock::Customer::VERSION = '0.002';
 }
 
 # ABSTRACT: Class allowing API operations in the context of a specific customer
@@ -185,7 +185,7 @@ WebService::Shutterstock::Customer - Class allowing API operations in the contex
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -281,8 +281,15 @@ API currently returns an HTTP status of C<500> on an unknown lightbox ID
 
 Retrieve the download history for this customer account.  You can
 specify a C<page_number> argument if you prefer to retrieve a single
-page of results (starting with page C<0>).  The data returned will look
-something like this:
+page of results (starting with page C<0>).  Or, you can fetch the
+C<redownloadable_state> of a particular image:
+
+	my $redownloadable_state = $customer->downloads(
+		image_id => 11024440,
+		field    => "redownloadable_state"
+	);
+
+The data returned will look something like this:
 
 	[
 		{

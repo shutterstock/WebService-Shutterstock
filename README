@@ -2,7 +2,7 @@ NAME
     WebService::Shutterstock - Easy access to Shutterstock's public API
 
 VERSION
-    version 0.001
+    version 0.002
 
 SYNOPSIS
             my $shutterstock = WebService::Shutterstock->new(
@@ -57,6 +57,18 @@ DESCRIPTION
     as well:
 
             my $downloads = $customer->downloads;
+
+    Or you can fetch one 'page' (40 items) of downloads. Pages start being
+    numbered at 0.
+
+            my $page_two_of_downloads = $customer->downloads( page_number => 1 );
+
+    Or, you can fetch the "redownloadable_state" of a particular image.
+
+            my $redownloadable_state = $customer->downloads(
+                    image_id => 11024440,
+                    field    => "redownloadable_state"
+            );
 
    Lightboxes
     Lightbox retrieval starts with a customer as well but most methods are

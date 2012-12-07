@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::HasClient::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::HasClient::VERSION = '0.001';
+  $WebService::Shutterstock::HasClient::VERSION = '0.002';
 }
 
 # ABSTRACT: Role managing a client attribute
@@ -34,7 +34,7 @@ WebService::Shutterstock::HasClient - Role managing a client attribute
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 DESCRIPTION
 

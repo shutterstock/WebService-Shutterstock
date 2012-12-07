@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::DeferredData::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::DeferredData::VERSION = '0.001';
+  $WebService::Shutterstock::DeferredData::VERSION = '0.002';
 }
 
 # ABSTRACT: Utility class for easy lazy-loading from the API
@@ -81,7 +81,7 @@ WebService::Shutterstock::DeferredData - Utility class for easy lazy-loading fro
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 DESCRIPTION
 

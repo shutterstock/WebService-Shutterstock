@@ -3,7 +3,7 @@ BEGIN {
   $WebService::Shutterstock::LicensedImage::AUTHORITY = 'cpan:BPHILLIPS';
 }
 {
-  $WebService::Shutterstock::LicensedImage::VERSION = '0.001';
+  $WebService::Shutterstock::LicensedImage::VERSION = '0.002';
 }
 
 # ABSTRACT: Allows for interogating and saving a licensed image from the Shutterstock API
@@ -78,7 +78,7 @@ WebService::Shutterstock::LicensedImage - Allows for interogating and saving a l
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 

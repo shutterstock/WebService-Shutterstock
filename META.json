@@ -4,7 +4,7 @@
       "Brian Phillips <bphillips@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300025, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -17,6 +17,13 @@
       "configure" : {
          "requires" : {
             "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Pod::Coverage::TrustPod" : "0",
+            "Test::Pod" : "1.41",
+            "Test::Pod::Coverage" : "1.08"
          }
       },
       "runtime" : {
@@ -49,14 +56,14 @@
       "bugtracker" : {
          "web" : "https://github.com/brianphillips/WebService-Shutterstock/issues"
       },
-      "homepage" : "http://api.shutterstock.com",
+      "homepage" : "http://search.cpan.org/dist/WebService-Shutterstock/",
       "repository" : {
          "type" : "git",
          "url" : "git://github.com/brianphillips/WebService-Shutterstock.git",
          "web" : "https://github.com/brianphillips/WebService-Shutterstock"
       }
    },
-   "version" : "0.001",
+   "version" : "0.002",
    "x_authority" : "cpan:BPHILLIPS"
 }
 

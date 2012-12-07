@@ -8,6 +8,7 @@ README
 README.mkdn
 dist.ini
 examples/download.pl
+examples/history.pl
 examples/subscriptions.pl
 lib/WebService/Shutterstock.pm
 lib/WebService/Shutterstock/AuthedClient.pm
