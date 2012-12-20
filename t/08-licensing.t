@@ -4,6 +4,7 @@ use Test::More;
 use WebService::Shutterstock;
 use Test::MockModule;
 use WebService::Shutterstock::Subscription;
+use JSON qw(encode_json);
 
 my $client = WebService::Shutterstock::Client->new;
 my $customer = WebService::Shutterstock::Customer->new(
@@ -34,12 +35,20 @@ can_ok $customer, 'license_image';
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
+	my $metadata;
+	my $metadata_regex;
+	$guard->mock('GET', sub {
+		my $self = shift;
+		return $self->response(
+			response(200, encode_json({metadata_field_definitions => $metadata, account_id => 1}))
+		);
+	});
 	$guard->mock('POST', sub {
 		my($self, $url, $content) = @_;
 		is $url, q{/subscriptions/2/images/1/sizes/medium.json}, 'correct URL';
 		like $content, qr{format=jpg}, 'has format';
 		like $content, qr{auth_token=123}, 'has auth_token';
-		like $content, qr{metadata=%7B%22key}, 'has metadata';
+		like $content, $metadata_regex, 'has metadata' if $metadata_regex;
 		return $self->response(
 			response(
 				200,
@@ -59,10 +68,23 @@ can_ok $customer, 'license_image';
 	} or do {
 		like $@, qr{Invalid size.*bogus}, 'errors on invalid size';
 	};
+	eval {
+		delete $customer->{_info};
+		$metadata = [{ name_api => 'foobar', is_required => 1 }];
+		$customer->license_image(
+			image_id     => 1,
+			size         => 'medium',
+			subscription => { license => 'premier_digital' }
+		);
+		ok 0, 'should die';
+	} or do {
+		like $@, qr{Missing required metadata.*foobar}, 'errors on missing metadata';
+	};
+	$metadata_regex = qr{metadata=%7B%22foobar};
 	my $image = $customer->license_image(
 		image_id     => 1,
 		size         => 'medium',
-		metadata     => { key => 'value' },
+		metadata     => { foobar => 'value' },
 		subscription => { license => 'premier_digital' }
 	);
 	my $lwp = Test::MockModule->new('LWP::UserAgent');
