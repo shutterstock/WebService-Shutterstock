@@ -334,7 +334,7 @@ sub license_image {
 		),
 		$self->with_auth_params(
 			format   => $format,
-			metadata => encode_json($metadata),
+			($metadata ? (metadata => encode_json($metadata)) : () ),
 		)
 	);
 
