@@ -1,9 +1,6 @@
 package WebService::Shutterstock::Subscription;
-BEGIN {
-  $WebService::Shutterstock::Subscription::AUTHORITY = 'cpan:BPHILLIPS';
-}
 {
-  $WebService::Shutterstock::Subscription::VERSION = '0.002';
+  $WebService::Shutterstock::Subscription::VERSION = '0.003';
 }
 
 # ABSTRACT: Class representing a subscription for a specific Shutterstock customer
@@ -64,7 +61,7 @@ WebService::Shutterstock::Subscription - Class representing a subscription for a
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 ATTRIBUTES
 

@@ -1,9 +1,6 @@
 package WebService::Shutterstock;
-BEGIN {
-  $WebService::Shutterstock::AUTHORITY = 'cpan:BPHILLIPS';
-}
 {
-  $WebService::Shutterstock::VERSION = '0.002';
+  $WebService::Shutterstock::VERSION = '0.003';
 }
 
 # ABSTRACT: Easy access to Shutterstock's public API
@@ -109,7 +106,7 @@ WebService::Shutterstock - Easy access to Shutterstock's public API
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 

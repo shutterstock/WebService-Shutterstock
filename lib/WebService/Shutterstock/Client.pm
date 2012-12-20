@@ -1,9 +1,6 @@
 package WebService::Shutterstock::Client;
-BEGIN {
-  $WebService::Shutterstock::Client::AUTHORITY = 'cpan:BPHILLIPS';
-}
 {
-  $WebService::Shutterstock::Client::VERSION = '0.002';
+  $WebService::Shutterstock::Client::VERSION = '0.003';
 }
 
 # ABSTRACT: Provides easy REST interactions with the Shutterstock API
@@ -125,7 +122,7 @@ WebService::Shutterstock::Client - Provides easy REST interactions with the Shut
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 DESCRIPTION
 

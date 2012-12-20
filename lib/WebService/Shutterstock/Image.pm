@@ -1,9 +1,6 @@
 package WebService::Shutterstock::Image;
-BEGIN {
-  $WebService::Shutterstock::Image::AUTHORITY = 'cpan:BPHILLIPS';
-}
 {
-  $WebService::Shutterstock::Image::VERSION = '0.002';
+  $WebService::Shutterstock::Image::VERSION = '0.003';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API
@@ -74,7 +71,7 @@ WebService::Shutterstock::Image - Represent the set of information about a Shutt
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 

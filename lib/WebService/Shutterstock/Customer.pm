@@ -1,9 +1,6 @@
 package WebService::Shutterstock::Customer;
-BEGIN {
-  $WebService::Shutterstock::Customer::AUTHORITY = 'cpan:BPHILLIPS';
-}
 {
-  $WebService::Shutterstock::Customer::VERSION = '0.002';
+  $WebService::Shutterstock::Customer::VERSION = '0.003';
 }
 
 # ABSTRACT: Class allowing API operations in the context of a specific customer
@@ -18,13 +15,24 @@ use JSON qw(encode_json);
 with 'WebService::Shutterstock::AuthedClient';
 
 
-has account_id => ( is => 'lazy' );
-sub _build_account_id {
+sub account_id {
+	my $self = shift;
+	return $self->_info->{account_id};
+}
+
+
+sub metadata_field_definitions {
+	my $self = shift;
+	return $self->_info->{metadata_field_definitions};
+}
+
+has _info => ( is => 'lazy' );
+sub _build__info {
 	my $self = shift;
 	my $client = $self->client;
 	$client->GET( sprintf( '/customers/%s.json', $self->username ), $self->with_auth_params );
 	my $data = $client->process_response;
-	return $data->{account_id};
+	return $data;
 }
 
 
@@ -114,7 +122,23 @@ sub license_image {
 	my %args     = @_;
 
 	my $image_id = $args{image_id} or croak "Must specify image_id to license";
-	my $metadata = $args{metadata} || {purchase_order => '', job => '', client => '', other => ''};
+	my $metadata;
+	if(my $metadata_definitions = $self->metadata_field_definitions){
+		$metadata = $args{metadata} || {};
+		my @missing;
+		foreach my $md(@{ $metadata_definitions }){
+			$metadata->{$md->{name_api}} = '' if !defined $metadata->{$md->{name_api}};
+			if($md->{is_required} && $metadata->{$md->{name_api}} eq ''){
+				push @missing, $md->{name_api};
+			}
+		}
+		if(@missing){
+		croak
+			sprintf(
+			'Missing required metadata field%s for licensing image: %s',
+			@missing == 1 ? '' : 's', join ', ', @missing );
+		}
+	}
 	my $size     = $args{size};
 
 	my $single_finder = sub {
@@ -185,7 +209,7 @@ WebService::Shutterstock::Customer - Class allowing API operations in the contex
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -225,6 +249,15 @@ customer (via L<WebService::Shutterstock/"auth">).
 =head2 account_id
 
 Retrieves the account ID for this account.
+
+=head2 metadata_field_definitions
+
+Retrieves the set of metadata fields for your account (if so configured
+by Shutterstock).  Returns an ArrayRef of HashRefs (or C<undef> if
+this feature doesn't apply to your account).  When
+L<licensing an image|/license_image> you should provide the required
+metadata values using the C<name_api> values specified for each
+metadata field returned by this method.
 
 =head2 subscriptions
 
@@ -337,6 +370,18 @@ a single subscription.  For instance:
 		image_id     => $image_id,
 		size         => $size,
 		subscription => $enhanced
+	);
+
+If your account is configured by Shutterstock to require custom
+metadata values to be provided when licensing images (see
+L</metadata_field_definitions>), you can provide those values
+using the C<metadata> parameter.  For instance:
+
+	my $licensed_image = $customer->license_image(
+		image_id     => $image_id,
+		size         => $size,
+		subscription => $subscription,
+		metadata     => { purchase_order => '<value here>', }
 	);
 
 =head1 AUTHOR
