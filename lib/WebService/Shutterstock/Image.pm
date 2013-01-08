@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Image;
 {
-  $WebService::Shutterstock::Image::VERSION = '0.003';
+  $WebService::Shutterstock::Image::VERSION = '0.004';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock image as returned by the API
@@ -71,7 +71,7 @@ WebService::Shutterstock::Image - Represent the set of information about a Shutt
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 

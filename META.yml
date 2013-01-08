@@ -33,4 +33,4 @@ resources:
   bugtracker: https://github.com/brianphillips/WebService-Shutterstock/issues
   homepage: http://search.cpan.org/dist/WebService-Shutterstock/
   repository: git://github.com/brianphillips/WebService-Shutterstock.git
-version: 0.003
+version: 0.004

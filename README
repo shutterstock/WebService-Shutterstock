@@ -2,7 +2,7 @@ NAME
     WebService::Shutterstock - Easy access to Shutterstock's public API
 
 VERSION
-    version 0.003
+    version 0.004
 
 SYNOPSIS
             my $shutterstock = WebService::Shutterstock->new(
