@@ -11,7 +11,6 @@ use Moo;
 use WebService::Shutterstock::Subscription;
 use Carp qw(croak);
 use JSON qw(encode_json);
-use List::MoreUtils qw(uniq);
 
 with 'WebService::Shutterstock::AuthedClient';
 
@@ -226,7 +225,8 @@ sub _valid_size_for_subscription {
   croak "Must specify size of video to license" if !$size;
 
   if ( !grep { $_ eq $size } @valid_sizes ) {
-    croak "Invalid size '$size', please specify a valid size: " . join(", ", uniq @valid_sizes);
+		my %uniq_sizes = map {$_ => 1} @valid_sizes;
+    croak "Invalid size '$size', please specify a valid size: " . join(", ", keys %uniq_sizes);
   }
 	return $size;
 }

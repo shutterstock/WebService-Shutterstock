@@ -28,7 +28,6 @@ my %WriteMakefileArgs = (
     "Carp" => 0,
     "JSON" => 0,
     "LWP::Simple" => 0,
-    "List::MoreUtils" => 0,
     "MIME::Base64" => 0,
     "Moo" => 1,
     "Moo::Role" => 0,
