@@ -11,6 +11,7 @@ use Moo;
 use WebService::Shutterstock::Subscription;
 use Carp qw(croak);
 use JSON qw(encode_json);
+use List::MoreUtils qw(uniq);
 
 with 'WebService::Shutterstock::AuthedClient';
 
@@ -232,13 +233,14 @@ sub _valid_size_for_subscription {
 
 sub _valid_metadata {
 	my $self = shift;
-	my $metadata;
+	my $metadata = shift;
+	my $valid;
 	if(my $metadata_definitions = $self->metadata_field_definitions){
-		$metadata = $args{metadata} || {};
+		$valid = $metadata || {};
 		my @missing;
 		foreach my $md(@{ $metadata_definitions }){
-			$metadata->{$md->{name_api}} = '' if !defined $metadata->{$md->{name_api}};
-			if($md->{is_required} && $metadata->{$md->{name_api}} eq ''){
+			$valid->{$md->{name_api}} = '' if !defined $valid->{$md->{name_api}};
+			if($md->{is_required} && $valid->{$md->{name_api}} eq ''){
 				push @missing, $md->{name_api};
 			}
 		}
@@ -249,7 +251,7 @@ sub _valid_metadata {
 			@missing == 1 ? '' : 's', join ', ', @missing );
 		}
 	}
-	return $metadata;
+	return $valid;
 }
 
 1;
