@@ -27,6 +27,8 @@ with 'WebService::Shutterstock::AuthedClient';
 
 =attr expiration_time
 
+=attr price_per_download
+
 =cut
 
 has id => ( is => 'ro', required => 1, init_arg => 'subscription_id' );
@@ -38,6 +40,7 @@ my @fields = qw(
 	  sizes
 	  site
 	  expiration_time
+	  price_per_download
 );
 foreach my $f(@fields){
 	has $f => ( is => 'ro' );
