@@ -30,7 +30,7 @@
          "requires" : {
             "Carp" : "0",
             "JSON" : "0",
-            "LWP::Simple" : "0",
+            "LWP::UserAgent" : "0",
             "MIME::Base64" : "0",
             "Moo" : "1",
             "Moo::Role" : "0",

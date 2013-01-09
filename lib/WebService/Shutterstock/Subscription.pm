@@ -24,6 +24,7 @@ my @fields = qw(
 	  sizes
 	  site
 	  expiration_time
+		price_per_download
 );
 foreach my $f(@fields){
 	has $f => ( is => 'ro' );
@@ -34,7 +35,7 @@ sub sizes_for_licensing {
 	my $self = shift;
 	return
 	  map  { $_->{name} }
-	  grep { $_->{name} ne 'supersize' && $_->{format} ne 'tiff' }
+	  grep { $_->{name} ne 'supersize' && (!$_->{format} || $_->{format} ne 'tiff') }
 	  values %{ $self->sizes || {} };
 }
 
