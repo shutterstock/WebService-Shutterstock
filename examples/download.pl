@@ -5,7 +5,7 @@ use warnings;
 use Getopt::Long;
 use WebService::Shutterstock;
 
-my($api_user, $api_key, $username, $password, %subscription_filter, $image_id, $size, $file, $directory, %metadata, $help);
+my($api_user, $api_key, $username, $password, %subscription_filter, $image_id, $video_id, $size, $file, $directory, %metadata, $help);
 GetOptions(
 	"api-user=s"     => \$api_user,
 	"api-key=s"      => \$api_key,
@@ -13,49 +13,61 @@ GetOptions(
 	"password=s"     => \$password,
 	"subscription=s" => \%subscription_filter,
 	"image=i"        => \$image_id,
+	"video=i"        => \$video_id,
 	"size=s"         => \$size,
 	"metadata=s"     => \%metadata,
 	"file=s"         => \$file,
 	"directory=s"    => \$directory,
 	"help"           => \$help
 );
-usage(-1) if grep { !defined($_) } ($api_user, $api_key, $username, $password, $image_id, $size);
+usage(-1) if grep { !defined($_) } ($api_user, $api_key, $username, $password, $size);
+usage(-1) if !$image_id && !$video_id;
+usage(-1, 'Please specify either an image or a video to download (not both)') if $image_id && $video_id;
 usage(-1) if !$file && !$directory;
+
+my $type = $image_id ? 'image' : 'video';
 
 usage() if $help;
 
 my $shutterstock = WebService::Shutterstock->new( api_username => $api_user, api_key => $api_key );
 my $user = $shutterstock->auth( username => $username, password => $password );
 
-my $licensed_image = $user->license_image(
-	image_id => $image_id,
-	size     => $size,
-	( keys %metadata ? ( metadata => \%metadata ) : () ),
-	(
-		keys %subscription_filter
-		? ( subscription => \%subscription_filter )
-		: ()
-	)
-);
+my $license_method = "license_$type";
+
+my %license_args = ( size => $size );
+
+if($type eq 'image'){
+	$license_args{image_id} = $image_id;
+} else {
+	$license_args{video_id} = $video_id;
+}
+
+$license_args{metadata} = \%metadata                if keys %metadata;
+$license_args{subscription} = \%subscription_filter if keys %subscription_filter;
+
+my $licensed_media = $user->$license_method( %license_args );
 
 my $saved;
 if ($directory) {
-	$saved = $licensed_image->download( directory => $directory );
+	$saved = $licensed_media->download( directory => $directory );
 } elsif ( $file eq '-' ) {
 	binmode(STDOUT);
-	print $licensed_image->download;
+	print $licensed_media->download;
 } elsif ($file) {
-	$saved = $licensed_image->download( file => $file );
+	$saved = $licensed_media->download( file => $file );
 }
 
 if($saved){
-	print "Saved image to $saved\n";
+	print "Saved $type to $saved\n";
 }
 
 sub usage {
+	my $exit_code = shift;
 	my $error = shift;
+	print "$error\n" if $error;
 	print <<"_USAGE_";
-usage: $0 --api-user justme --api-key abc123 --username my_user --password my_password --image 59915404 --size medium --directory .
+usage (for images): $0 --api-user justme --api-key abc123 --username my_user --password my_password --image 59915404 --size medium --directory .
+   or (for videos): $0 --api-user justme --api-key abc123 --username my_user --password my_password --video 11234 --size lowres --directory .
 _USAGE_
-	exit $error || 0;
+	exit $exit_code || 0;
 }

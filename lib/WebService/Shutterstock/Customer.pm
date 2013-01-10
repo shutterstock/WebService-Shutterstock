@@ -8,6 +8,7 @@ use Moo;
 use WebService::Shutterstock::Subscription;
 use Carp qw(croak);
 use JSON qw(encode_json);
+use WebService::Shutterstock::LicensedVideo;
 
 with 'WebService::Shutterstock::AuthedClient';
 
@@ -266,63 +267,15 @@ sub license_image {
 	my %args     = @_;
 
 	my $image_id = $args{image_id} or croak "Must specify image_id to license";
-	my $metadata;
-	if(my $metadata_definitions = $self->metadata_field_definitions){
-		$metadata = $args{metadata} || {};
-		my @missing;
-		foreach my $md(@{ $metadata_definitions }){
-			$metadata->{$md->{name_api}} = '' if !defined $metadata->{$md->{name_api}};
-			if($md->{is_required} && $metadata->{$md->{name_api}} eq ''){
-				push @missing, $md->{name_api};
-			}
-		}
-		if(@missing){
-		croak
-			sprintf(
-			'Missing required metadata field%s for licensing image: %s',
-			@missing == 1 ? '' : 's', join ', ', @missing );
-		}
-	}
-	my $size     = $args{size};
 
-	my $single_finder = sub {
-		my %criteria = @_;
-		my @matching = $self->find_subscriptions( %criteria, is_active => 1 );
-		if ( @matching == 0 ) {
-			croak "Unable to find a subscription to license images";
-		} elsif ( @matching > 1 ) {
-			croak "You have more than one active subscription.  Please provide a WebService::Shutterstock::Subscription object or specify unique critiria to identify which subscription you would like to use (i.e. { license => 'standard' } or { id => 26374582 } )";
-		}
-		return $matching[0];
-	};
-
-
-	my $subscription;
-	if(my $sub_arg = $args{subscription}){
-		if(!ref($sub_arg)){
-			$subscription = $self->subscription( id => $sub_arg );
-		} elsif(ref($sub_arg) eq 'HASH'){
-			$subscription = $single_finder->( %$sub_arg );
-		} elsif(eval { $sub_arg->isa('WebService::Shutterstock::Subscription') }){
-			$subscription = $sub_arg;
-		}
-	} else {
-		$subscription = $single_finder->();
-	}
-
+	my $subscription = $self->_find_subscription_from_arg('photo', $args{subscription});
 	if(!$subscription){
 		croak "Must specify a subscription to license images under";
 	}
 
-	my @valid_sizes = $subscription->sizes_for_licensing;
-	if(!$size && @valid_sizes == 1){
-		$size = $valid_sizes[0];
-	}
-	croak "Must specify size of image to license" if !$size;
+	my $metadata = $self->_valid_metadata($args{metadata});
 
-	if ( !grep { $_ eq $size } @valid_sizes ) {
-		croak "Invalid size '$size', please specify a valid size: " . join(", ", @valid_sizes);
-	}
+  my $size = $self->_valid_size_for_subscription($subscription, $args{size});
 
 	my $format = $size eq 'vector' ? 'eps' : 'jpg';
 	my $client = $self->client;
@@ -339,6 +292,113 @@ sub license_image {
 	);
 
 	return WebService::Shutterstock::LicensedImage->new($client->process_response);
+}
+
+sub license_video {
+  my $self     = shift;
+  my %args     = @_;
+
+  my $video_id = $args{video_id} or croak "Must specify video_id to license";
+	my $subscription = $self->_find_subscription_from_arg('video', $args{subscription});
+  if(!$subscription){
+    croak "Must specify a subscription to license videos under";
+  }
+
+	my $metadata = $self->_valid_metadata($args{metadata});
+
+  my $size = $self->_valid_size_for_subscription($subscription, $args{size});
+
+  my $client = $self->client;
+
+  $client->POST(
+    sprintf(
+      '/subscriptions/%s/videos/%s/sizes/%s.json',
+      $subscription->id, $video_id, $size
+    ),
+    $self->with_auth_params(
+      ($metadata ? (metadata => encode_json($metadata)) : () ),
+    )
+  );
+
+  return WebService::Shutterstock::LicensedVideo->new($client->process_response);
+}
+
+sub _find_subscription_from_arg {
+	my $self = shift;
+	my $type = shift;
+	my $sub_arg = shift;
+
+
+	my $single_finder = sub {
+		my %criteria = @_;
+		my @matching = $self->find_subscriptions( %criteria, is_active => 1, site => "${type}_subscription" );
+		if ( @matching == 0 ) {
+			croak "Unable to find a matching subscription to license ${type}s";
+		} elsif ( @matching > 1 ) {
+			croak "You have more than one active subscription.  Please provide a WebService::Shutterstock::Subscription object or specify unique critiria to identify which subscription you would like to use (i.e. { license => 'standard' } or { id => 26374582 } )";
+		}
+		return $matching[0];
+	};
+
+	my $subscription;
+
+	if($sub_arg){
+		if(!ref($sub_arg)){
+			$subscription = $self->subscription( id => $sub_arg );
+		} elsif(ref($sub_arg) eq 'HASH'){
+			$subscription = $single_finder->( %$sub_arg );
+		} elsif(eval { $sub_arg->isa('WebService::Shutterstock::Subscription') }){
+			$subscription = $sub_arg;
+		}
+	} else {
+		$subscription = $single_finder->();
+	}
+	if($subscription && $subscription->site ne "${type}_subscription"){
+		croak sprintf('The subscription specified is for the wrong "site" (needed "%s_subscription", found %s)', $type, $subscription->site);
+	}
+	return $subscription;
+}
+
+sub _valid_size_for_subscription {
+	my $self = shift;
+	my $subscription = shift;
+	my $size = shift;
+
+  my @valid_sizes = $subscription->sizes_for_licensing;
+
+	if(!$size && @valid_sizes == 1){
+    $size = $valid_sizes[0];
+  }
+  croak "Must specify size of video to license" if !$size;
+
+  if ( !grep { $_ eq $size } @valid_sizes ) {
+		my %uniq_sizes = map {$_ => 1} @valid_sizes;
+    croak "Invalid size '$size', please specify a valid size: " . join(", ", keys %uniq_sizes);
+  }
+	return $size;
+}
+
+sub _valid_metadata {
+	my $self = shift;
+	my $metadata = shift;
+	my $valid;
+	if(my $metadata_definitions = $self->metadata_field_definitions){
+		$valid = $metadata || {};
+		my @missing;
+		foreach my $md(@{ $metadata_definitions }){
+			$valid->{$md->{name_api}} = '' if !defined $valid->{$md->{name_api}};
+			if($md->{is_required} && $valid->{$md->{name_api}} eq ''){
+				push @missing, $md->{name_api};
+			}
+		}
+		if(@missing){
+		croak
+			sprintf(
+			'Missing required metadata field%s for licensing image: %s',
+			@missing == 1 ? '' : 's', join ', ', @missing );
+		}
+	}
+	return $valid;
 }
 
 1;

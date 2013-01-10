@@ -1,6 +1,6 @@
-package WebService::Shutterstock::LicensedImage;
+package WebService::Shutterstock::LicensedVideo;
 
-# ABSTRACT: Allows for interogating and saving a licensed image from the Shutterstock API
+# ABSTRACT: Allows for interogating and saving a licensed video from the Shutterstock API
 
 use strict;
 use warnings;
@@ -8,12 +8,12 @@ use Moo;
 
 with 'WebService::Shutterstock::LicensedMedia';
 
-my @attrs = qw(photo_id thumb_large_url allotment_charge);
+my @attrs = qw(video_id thumb_large_url allotment_charge);
 foreach my $attr(@attrs){
 	has $attr => (is => 'ro');
 }
 
-=attr photo_id
+=attr video_id
 
 =attr thumb_large_url
 
@@ -34,7 +34,7 @@ sub BUILDARGS {
 
 =method download
 
-Downloads a licensed image.  If no arguments are specified, the raw bytes
+Downloads a licensed video.  If no arguments are specified, the raw bytes
 of the file are returned.  You can also specify a file OR a directory
 (one or the other) to save the file instead of returning the raw bytes
 (as demonstrated in the SYNOPSIS).
@@ -51,16 +51,16 @@ the same name already exists.
 
 =head1 SYNOPSIS
 
-	my $licensed_image = $subscription->license_image(image_id => 59915404, size => 'medium');
+	my $licensed_video = $subscription->license_video(video_id => 11234, size => 'lowres');
 
 	# retrieve the bytes of the file
-	my $jpg_bytes = $licensed_image->download;
+	my $jpg_bytes = $licensed_video->download;
 
 	# or, save the file to a valid filename
-	$licensed_image->download(file => '/my/photos/my-pic.jpg');
+	$licensed_video->download(file => '/my/videos/my-video.mpg');
 
 	# or, specify the directory and the filename will reflect what the server specifies
-	# (typically as something like shutterstock_59915404.jpg)
-	my $path_to_file = $licensed_image->download(directory => '/my/photos');
+	# (typically as something like shutterstock_11234.mpg)
+	my $path_to_file = $licensed_video->download(directory => '/my/videos');
 
 =cut
