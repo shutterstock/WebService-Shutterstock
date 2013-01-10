@@ -14,6 +14,7 @@ use WebService::Shutterstock::Client;
 use WebService::Shutterstock::Customer;
 use WebService::Shutterstock::SearchResults;
 use WebService::Shutterstock::Exception;
+use WebService::Shutterstock::Video;
 
 has api_username => (
 	is => 'ro',
@@ -122,6 +123,19 @@ sub image {
 	my $image_id = shift;
 	my $image = WebService::Shutterstock::Image->new( image_id => $image_id, client => $self->client );
 	return $image->is_available ? $image : undef;
+}
+
+=method video($video_id)
+
+Performs a lookup on a single video.  Returns a L<WebService::Shutterstock::Video> object (or C<undef> if the image doesn't exist).
+
+=cut
+
+sub video {
+	my $self = shift;
+	my $video_id = shift;
+	my $video = WebService::Shutterstock::Video->new( video_id => $video_id, client => $self->client );
+	return $video->is_available ? $video : undef;
 }
 
 1;

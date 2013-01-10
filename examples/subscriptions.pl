@@ -66,8 +66,6 @@ sub print_subscription_details {
 	} else {
 		printf( " - Access expires: %s\n", $subscription->expiration_time );
 	}
-	use Data::Dumper;
-	warn Dumper $subscription->sizes;
 	printf " - Sizes available: %s\n", join ', ', map { "$_->{short_name} ($_->{text_id})" } values %{ $subscription->sizes };
 	print "\n";
 }
