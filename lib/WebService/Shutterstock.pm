@@ -102,14 +102,38 @@ sub categories {
 
 =method search(%search_query)
 
-Perform a search.  Accepts any params documented here: L<http://api.shutterstock.com/#imagessearch>.  Returns a L<WebService::Shutterstock::SearchResults> object.
+Perform a search.  This method assumes you want to search images unless
+you specify a C<type> parameter as part of the C<%search_query>.  Accepts
+any params documented here: L<http://api.shutterstock.com/#imagessearch>.
+Returns a L<WebService::Shutterstock::SearchResults> object.
 
 =cut
 
 sub search {
 	my $self = shift;
 	my %args = @_;
-	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => \%args );
+	my $type = delete $args{type} || 'image';
+	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => \%args, type => $type );
+}
+
+=method search_images(%search_query)
+
+Equivalent to calling C<search> with a C<type> parameter of C<image>.
+
+=cut
+
+sub search_images {
+	return shift->search(@_, type => 'image');
+}
+
+=method search_videos(%search_query)
+
+Equivalent to calling C<search> with a C<type> parameter of C<video>.
+
+=cut
+
+sub search_videos {
+	return shift->search(@_, type => 'video');
 }
 
 =method image($image_id)
@@ -147,8 +171,11 @@ sub video {
 		api_key      => 'abcdef1234567890'
 	);
 
-	# perform a search
-	my $search = $shutterstock->search( searchterm => 'hummingbird' );
+	# perform an image search
+	my $search = $shutterstock->search( type => 'image', searchterm => 'hummingbird' );
+
+	# or, a video search
+	my $videos = $shutterstock->search( type => 'video', searchterm => 'hummingbird' );
 
 	# retrieve results of search
 	my $results = $search->results;
