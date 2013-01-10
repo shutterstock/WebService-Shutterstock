@@ -8,10 +8,11 @@ package WebService::Shutterstock::LicensedImage;
 use strict;
 use warnings;
 use Moo;
+use Carp qw(croak);
+use LWP::Simple;
+use WebService::Shutterstock::Exception;
 
-with 'WebService::Shutterstock::LicensedMedia';
-
-my @attrs = qw(photo_id thumb_large_url allotment_charge);
+my @attrs = qw(photo_id thumb_large_url allotment_charge download_url);
 foreach my $attr(@attrs){
 	has $attr => (is => 'ro');
 }
@@ -24,6 +25,43 @@ sub BUILDARGS {
 	return $args;
 }
 
+
+sub download {
+	my $self = shift;
+	my %args = @_;
+	my @unknown_args = grep { !/^(file|directory)$/ } keys %args;
+
+	croak "Invalid args: @unknown_args (expected either 'file' or 'download')" if @unknown_args;
+
+	my $url = $self->download_url;
+	my $destination;
+	if($args{directory}){
+		$destination = $args{directory};
+		$destination =~ s{/$}{};
+		my($basename) = $url =~ m{.+/(.+)};
+		$destination .= "/$basename";
+	} elsif($args{file}){
+		$destination = $args{file};
+	}
+	if(!defined $destination && !defined wantarray){
+		croak "Refusing to download image in void context without specifying a destination file or directory (specify ->download(file => \$some_file) or ->download(directory => \$some_dir)"; 
+	}
+	my $ua = LWP::UserAgent->new;
+	my $response = $ua->get( $url, ( $destination ? ( ':content_file' => $destination ) : () ) );
+	if(my $died = $response->header('X-Died') ){
+		die WebService::Shutterstock::Exception->new(
+			response => $response,
+			error    => "Unable to save image to $destination: $died"
+		);
+	} elsif($response->code == 200){
+		return $destination || $response->content;
+	} else {
+		die WebService::Shutterstock::Exception->new(
+			response => $response,
+			error    => $response->status_line . ": unable to retrieve image",
+		);
+	}
+}
 
 1;
 

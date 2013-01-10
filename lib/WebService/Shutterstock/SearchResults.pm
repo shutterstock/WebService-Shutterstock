@@ -8,12 +8,22 @@ package WebService::Shutterstock::SearchResults;
 use strict;
 use warnings;
 use Moo;
-use WebService::Shutterstock::SearchResult::Item;
+use WebService::Shutterstock::SearchResult::Image;
+use WebService::Shutterstock::SearchResult::Video;
 
 with 'WebService::Shutterstock::HasClient';
 
 sub BUILD { shift->_results_data } # eagar loading
 
+
+
+has type => (
+	is => 'ro',
+	required => 1,
+	isa => sub {
+		die 'invalid type (expected "image" or "video")' unless $_[0] eq 'image' or $_[0] eq 'video';
+	}
+);
 
 has query => (
 	is       => 'ro',
@@ -25,7 +35,7 @@ has _results_data => ( is => 'lazy' );
 sub _build__results_data {
 	my $self = shift;
 	my $client = $self->client;
-	$client->GET('/images/search.json', $self->query);
+	$client->GET(sprintf('/%ss/search.json', $self->type), $self->query);
 	return $client->process_response;
 }
 
@@ -37,12 +47,45 @@ sub sort_method { return shift->_results_data->{sort_method} }
 
 sub results {
 	my $self = shift;
+	my $item_class = $self->type eq 'image' ? 'WebService::Shutterstock::SearchResult::Image' : 'WebService::Shutterstock::SearchResult::Video';
 	return [
 		map {
-			$self->new_with_client( 'WebService::Shutterstock::SearchResult::Item', %$_ );
+			$self->new_with_client( $item_class, %$_ );
 		}
 		@{ $self->_results_data->{results} || [] }
 	];
+}
+
+
+sub iterator {
+	my $self = shift;
+	my $count = $self->count;
+	my $search_results = $self;
+	my $batch;
+	my $batch_i = my $i = my $done = 0;
+	return sub {
+		return if $i >= $count;
+		my $item;
+		if(!$batch){
+			$batch = $search_results->results;
+		} elsif($batch_i >= @$batch){
+			$batch_i = 0;
+			eval {
+				$search_results = $search_results->next_page;
+				$batch = $search_results->results;
+				1;
+			} or do {
+				warn $@;
+				$done = 1;
+			};
+		}
+		return if !$batch || $done;
+
+		$item = $batch->[$batch_i];
+		$i++;
+		$batch_i++;
+		return $item;
+	};
 }
 
 
@@ -51,7 +94,7 @@ sub next_page {
 	my $query = { %{ $self->query } };
 	$query->{page_number} ||= 0;
 	$query->{page_number}++;
-	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => $query );
+	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => $query, type => $self->type );
 }
 
 1;
@@ -71,15 +114,26 @@ version 0.004
 =head1 SYNOPSIS
 
 	my $search = $shutterstock->search(searchterm => 'butterfly');
-	my $results = $search->results;
 
+	# grab results a page at a time
+	my $results = $search->results;
 	my $next_results = $search->next_page;
+
+	# or use an iterator
+	my $iterator = $search->iterator;
+	while(my $result = $iterator->()){
+		# ...
+	}
 
 =head1 ATTRIBUTES
 
 =head2 query
 
 A HashRef of the arguments used to perform the search.
+
+=head2 type
+
+Indicates whether these are "image" or "video" search results.
 
 =head2 page
 
@@ -97,8 +151,17 @@ The sort method used to perform the search.
 
 =head2 results
 
-Returns an ArrayRef of L<WebService::Shutterstock::SearchResult::Item> for this
-page of search results.
+Returns an ArrayRef of L<WebService::Shutterstock::SearchResult::Image>
+or L<WebService::Shutterstock::SearchResult::Video> objects for this
+page of search results (based on the C<type> of this set of search
+results).
+
+=head2 iterator
+
+Returns an iterator as a CodeRef that will return results in order until
+all results are exhausted (walking from one page to the next as needed).
+
+See the L<SYNOPSIS> for example usage.
 
 =head2 next_page
 

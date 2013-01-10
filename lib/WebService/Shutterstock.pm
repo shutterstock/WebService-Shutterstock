@@ -17,6 +17,7 @@ use WebService::Shutterstock::Client;
 use WebService::Shutterstock::Customer;
 use WebService::Shutterstock::SearchResults;
 use WebService::Shutterstock::Exception;
+use WebService::Shutterstock::Video;
 
 has api_username => (
 	is => 'ro',
@@ -83,7 +84,18 @@ sub categories {
 sub search {
 	my $self = shift;
 	my %args = @_;
-	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => \%args );
+	my $type = delete $args{type} || 'image';
+	return WebService::Shutterstock::SearchResults->new( client => $self->client, query => \%args, type => $type );
+}
+
+
+sub search_images {
+	return shift->search(@_, type => 'image');
+}
+
+
+sub search_videos {
+	return shift->search(@_, type => 'video');
 }
 
 
@@ -92,6 +104,14 @@ sub image {
 	my $image_id = shift;
 	my $image = WebService::Shutterstock::Image->new( image_id => $image_id, client => $self->client );
 	return $image->is_available ? $image : undef;
+}
+
+
+sub video {
+	my $self = shift;
+	my $video_id = shift;
+	my $video = WebService::Shutterstock::Video->new( video_id => $video_id, client => $self->client );
+	return $video->is_available ? $video : undef;
 }
 
 1;
@@ -115,8 +135,11 @@ version 0.004
 		api_key      => 'abcdef1234567890'
 	);
 
-	# perform a search
-	my $search = $shutterstock->search( searchterm => 'hummingbird' );
+	# perform an image search
+	my $search = $shutterstock->search( type => 'image', searchterm => 'hummingbird' );
+
+	# or, a video search
+	my $videos = $shutterstock->search( type => 'video', searchterm => 'hummingbird' );
 
 	# retrieve results of search
 	my $results = $search->results;
@@ -213,11 +236,26 @@ Returns a list of photo categories (useful for specifying a category_id when sea
 
 =head2 search(%search_query)
 
-Perform a search.  Accepts any params documented here: L<http://api.shutterstock.com/#imagessearch>.  Returns a L<WebService::Shutterstock::SearchResults> object.
+Perform a search.  This method assumes you want to search images unless
+you specify a C<type> parameter as part of the C<%search_query>.  Accepts
+any params documented here: L<http://api.shutterstock.com/#imagessearch>.
+Returns a L<WebService::Shutterstock::SearchResults> object.
+
+=head2 search_images(%search_query)
+
+Equivalent to calling C<search> with a C<type> parameter of C<image>.
+
+=head2 search_videos(%search_query)
+
+Equivalent to calling C<search> with a C<type> parameter of C<video>.
 
 =head2 image($image_id)
 
 Performs a lookup on a single image.  Returns a L<WebService::Shutterstock::Image> object (or C<undef> if the image doesn't exist).
+
+=head2 video($video_id)
+
+Performs a lookup on a single video.  Returns a L<WebService::Shutterstock::Video> object (or C<undef> if the image doesn't exist).
 
 =head1 ERROR HANDLING
 

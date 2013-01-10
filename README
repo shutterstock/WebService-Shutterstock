@@ -10,8 +10,11 @@ SYNOPSIS
                     api_key      => 'abcdef1234567890'
             );
 
-            # perform a search
-            my $search = $shutterstock->search( searchterm => 'hummingbird' );
+            # perform an image search
+            my $search = $shutterstock->search( type => 'image', searchterm => 'hummingbird' );
+
+            # or, a video search
+            my $videos = $shutterstock->search( type => 'video', searchterm => 'hummingbird' );
 
             # retrieve results of search
             my $results = $search->results;
@@ -101,13 +104,25 @@ METHODS
     when searching).
 
   search(%search_query)
-    Perform a search. Accepts any params documented here:
-    <http://api.shutterstock.com/#imagessearch>. Returns a
-    WebService::Shutterstock::SearchResults object.
+    Perform a search. This method assumes you want to search images unless
+    you specify a "type" parameter as part of the %search_query. Accepts any
+    params documented here: <http://api.shutterstock.com/#imagessearch>.
+    Returns a WebService::Shutterstock::SearchResults object.
+
+  search_images(%search_query)
+    Equivalent to calling "search" with a "type" parameter of "image".
+
+  search_videos(%search_query)
+    Equivalent to calling "search" with a "type" parameter of "video".
 
   image($image_id)
     Performs a lookup on a single image. Returns a
     WebService::Shutterstock::Image object (or "undef" if the image doesn't
+    exist).
+
+  video($video_id)
+    Performs a lookup on a single video. Returns a
+    WebService::Shutterstock::Video object (or "undef" if the image doesn't
     exist).
 
 ERROR HANDLING
