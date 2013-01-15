@@ -178,30 +178,49 @@ sub lightbox {
 
 Retrieve the download history for this customer account.  You can
 specify a C<page_number> argument if you prefer to retrieve a single
-page of results (starting with page C<0>).  Or, you can fetch the
-C<redownloadable_state> of a particular image:
+page of results (starting with page C<0>).
+
+The data returned will be a HashRef keyed by the subscription ID used
+to download the images and will look something like this:
+
+	{ "123456" =>            # subscription ID
+		[
+			{
+				image_id => 1,
+				license  => 'standard',
+				time     => '2012-11-01 14:16:08',
+			},
+			{
+				image_id => 2,
+				license  => 'premier',
+				metadata => { purchase_order => 'XYZ', client => 'My Client' },
+				time     => '2012-11-01 14:18:39',
+			},
+			# etc...
+		]
+	}
+
+You can fetch the C<redownloadable_state> of a particular image (C<image_id> must also be specified):
 
 	my $redownloadable_state = $customer->downloads(
 		image_id => 11024440,
 		field    => "redownloadable_state"
 	);
 
-The data returned will look something like this:
+In this call, you should see an extra field inside the image block indicating whether
+the image qualifies as a redownload under that subscription:
 
-	[
-		{
-			image_id => 1,
-			license  => 'standard',
-			time     => '2012-11-01 14:16:08',
-		},
-		{
-			image_id => 2,
-			license  => 'premier',
-			metadata => { purchase_order => 'XYZ', client => 'My Client' },
-			time     => '2012-11-01 14:18:39',
-		},
-		# etc...
-	]
+	{ "123456" =>            # subscription ID
+		[
+			{
+				image_id => 1,
+				license  => 'standard',
+				time     => '2012-11-01 14:16:08',
+				redownloadable_state => 1          # boolean
+			}
+		]
+	}
+
 
 =cut
 
