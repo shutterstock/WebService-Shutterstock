@@ -55,7 +55,9 @@ Returns a list of sizes that can be specified when licensing an image
 
 sub sizes_for_licensing {
 	my $self = shift;
+	my %uniq;
 	return
+	  grep { !$uniq{$_}++ }
 	  map  { $_->{name} }
 	  grep { $_->{name} ne 'supersize' && (!$_->{format} || $_->{format} ne 'tiff') }
 	  values %{ $self->sizes || {} };
