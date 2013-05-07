@@ -8,6 +8,7 @@ use Moo;
 use JSON qw(decode_json);
 use WebService::Shutterstock::Exception;
 
+use REST::Client;
 extends 'REST::Client';
 
 =method response

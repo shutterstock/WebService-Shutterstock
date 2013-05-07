@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Moo;
 
+use WebService::Shutterstock::LicensedMedia;
 with 'WebService::Shutterstock::LicensedMedia';
 
 my @attrs = qw(video_id thumb_large_url allotment_charge);

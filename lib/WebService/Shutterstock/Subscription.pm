@@ -9,6 +9,7 @@ use JSON qw(encode_json);
 use WebService::Shutterstock::LicensedImage;
 use Carp qw(croak);
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 =attr id

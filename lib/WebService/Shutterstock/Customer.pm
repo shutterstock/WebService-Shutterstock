@@ -10,6 +10,7 @@ use Carp qw(croak);
 use JSON qw(encode_json);
 use WebService::Shutterstock::LicensedVideo;
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 =method account_id
