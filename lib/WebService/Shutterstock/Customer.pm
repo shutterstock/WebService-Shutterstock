@@ -261,6 +261,10 @@ using the C<metadata> parameter.  For instance:
 		metadata     => { purchase_order => '<value here>', }
 	);
 
+If the image requires an acknowledgment that it will only be used in an
+editorial context, you must pass the C<editorial_acknowledgement =&gt; 1>
+argument to the method.
+
 =cut
 
 sub license_image {
@@ -269,6 +273,8 @@ sub license_image {
 
 	my $image_id = $args{image_id} or croak "Must specify image_id to license";
 
+	my $editorial_acknowledgement = $args{editorial_acknowledgement} || 0;
+
 	my $subscription = $self->_find_subscription_from_arg('photo', $args{subscription});
 	if(!$subscription){
 		croak "Must specify a subscription to license images under";
@@ -276,7 +282,7 @@ sub license_image {
 
 	my $metadata = $self->_valid_metadata($args{metadata});
 
-  my $size = $self->_valid_size_for_subscription($subscription, $args{size});
+	my $size = $self->_valid_size_for_subscription($subscription, $args{size});
 
 	my $format = $size eq 'vector' ? 'eps' : 'jpg';
 	my $client = $self->client;
@@ -287,8 +293,9 @@ sub license_image {
 			$subscription->id, $image_id, $size
 		),
 		$self->with_auth_params(
-			format   => $format,
-			($metadata ? (metadata => encode_json($metadata)) : () ),
+			format                    => $format,
+			editorial_acknowledgement => $editorial_acknowledgement,
+			( $metadata ? ( metadata => encode_json($metadata) ) : () ),
 		)
 	);
 
@@ -296,32 +303,36 @@ sub license_image {
 }
 
 sub license_video {
-  my $self     = shift;
-  my %args     = @_;
+	my $self     = shift;
+	my %args     = @_;
 
-  my $video_id = $args{video_id} or croak "Must specify video_id to license";
+	my $video_id = $args{video_id} or croak "Must specify video_id to license";
+
+	my $editorial_acknowledgement = $args{editorial_acknowledgement} || 0;
+
 	my $subscription = $self->_find_subscription_from_arg('video', $args{subscription});
-  if(!$subscription){
-    croak "Must specify a subscription to license videos under";
-  }
+	if(!$subscription){
+		croak "Must specify a subscription to license videos under";
+	}
 
 	my $metadata = $self->_valid_metadata($args{metadata});
 
-  my $size = $self->_valid_size_for_subscription($subscription, $args{size});
+	my $size = $self->_valid_size_for_subscription($subscription, $args{size});
 
-  my $client = $self->client;
+	my $client = $self->client;
 
-  $client->POST(
-    sprintf(
-      '/subscriptions/%s/videos/%s/sizes/%s.json',
-      $subscription->id, $video_id, $size
-    ),
-    $self->with_auth_params(
-      ($metadata ? (metadata => encode_json($metadata)) : () ),
-    )
-  );
+	$client->POST(
+		sprintf(
+			'/subscriptions/%s/videos/%s/sizes/%s.json',
+			$subscription->id, $video_id, $size
+		),
+		$self->with_auth_params(
+			editorial_acknowledgement => $editorial_acknowledgement,
+			( $metadata ? ( metadata => encode_json($metadata) ) : () ),
+		)
+	);
 
-  return WebService::Shutterstock::LicensedVideo->new($client->process_response);
+	return WebService::Shutterstock::LicensedVideo->new($client->process_response);
 }
 
 sub _find_subscription_from_arg {
@@ -365,17 +376,17 @@ sub _valid_size_for_subscription {
 	my $subscription = shift;
 	my $size = shift;
 
-  my @valid_sizes = $subscription->sizes_for_licensing;
+	my @valid_sizes = $subscription->sizes_for_licensing;
 
 	if(!$size && @valid_sizes == 1){
-    $size = $valid_sizes[0];
-  }
-  croak "Must specify size of video to license" if !$size;
+		$size = $valid_sizes[0];
+	}
+	croak "Must specify size of video to license" if !$size;
 
-  if ( !grep { $_ eq $size } @valid_sizes ) {
+	if ( !grep { $_ eq $size } @valid_sizes ) {
 		my %uniq_sizes = map {$_ => 1} @valid_sizes;
-    croak "Invalid size '$size', please specify a valid size: " . join(", ", keys %uniq_sizes);
-  }
+		croak "Invalid size '$size', please specify a valid size: " . join(", ", keys %uniq_sizes);
+	}
 	return $size;
 }
 
