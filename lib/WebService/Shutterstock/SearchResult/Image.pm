@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResult::Image;
 {
-  $WebService::Shutterstock::SearchResult::Image::VERSION = '0.004';
+  $WebService::Shutterstock::SearchResult::Image::VERSION = '0.005';
 }
 
 # ABSTRACT: Class representing a single image search result from the Shutterstock API
@@ -8,6 +8,9 @@ package WebService::Shutterstock::SearchResult::Image;
 use strict;
 use warnings;
 use Moo;
+
+use WebService::Shutterstock::HasClient;
+use WebService::Shutterstock::SearchResult::Item;
 
 with 'WebService::Shutterstock::HasClient', 'WebService::Shutterstock::SearchResult::Item';
 
@@ -36,7 +39,7 @@ WebService::Shutterstock::SearchResult::Image - Class representing a single imag
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 

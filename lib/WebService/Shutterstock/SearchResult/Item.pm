@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResult::Item;
 {
-  $WebService::Shutterstock::SearchResult::Item::VERSION = '0.004';
+  $WebService::Shutterstock::SearchResult::Item::VERSION = '0.005';
 }
 
 # ABSTRACT: role representing common attributes for various search result types
@@ -25,7 +25,7 @@ WebService::Shutterstock::SearchResult::Item - role representing common attribut
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 ATTRIBUTES
 

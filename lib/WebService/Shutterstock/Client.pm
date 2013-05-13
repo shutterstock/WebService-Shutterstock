@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Client;
 {
-  $WebService::Shutterstock::Client::VERSION = '0.004';
+  $WebService::Shutterstock::Client::VERSION = '0.005';
 }
 
 # ABSTRACT: Provides easy REST interactions with the Shutterstock API
@@ -11,6 +11,7 @@ use Moo;
 use JSON qw(decode_json);
 use WebService::Shutterstock::Exception;
 
+use REST::Client;
 extends 'REST::Client';
 
 
@@ -122,7 +123,7 @@ WebService::Shutterstock::Client - Provides easy REST interactions with the Shut
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 DESCRIPTION
 

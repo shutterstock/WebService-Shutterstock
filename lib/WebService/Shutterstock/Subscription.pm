@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Subscription;
 {
-  $WebService::Shutterstock::Subscription::VERSION = '0.004';
+  $WebService::Shutterstock::Subscription::VERSION = '0.005';
 }
 
 # ABSTRACT: Class representing a subscription for a specific Shutterstock customer
@@ -12,6 +12,7 @@ use JSON qw(encode_json);
 use WebService::Shutterstock::LicensedImage;
 use Carp qw(croak);
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 
@@ -24,7 +25,7 @@ my @fields = qw(
 	  sizes
 	  site
 	  expiration_time
-	  price_per_download
+		price_per_download
 );
 foreach my $f(@fields){
 	has $f => ( is => 'ro' );
@@ -33,9 +34,11 @@ foreach my $f(@fields){
 
 sub sizes_for_licensing {
 	my $self = shift;
+	my %uniq;
 	return
+	  grep { !$uniq{$_}++ }
 	  map  { $_->{name} }
-	  grep { $_->{name} ne 'supersize' && $_->{format} ne 'tiff' }
+	  grep { $_->{name} ne 'supersize' && (!$_->{format} || $_->{format} ne 'tiff') }
 	  values %{ $self->sizes || {} };
 }
 
@@ -62,7 +65,7 @@ WebService::Shutterstock::Subscription - Class representing a subscription for a
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 ATTRIBUTES
 

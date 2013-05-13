@@ -27,7 +27,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Carp" => 0,
     "JSON" => 0,
-    "LWP::Simple" => 0,
+    "LWP::UserAgent" => 0,
     "MIME::Base64" => 0,
     "Moo" => 1,
     "Moo::Role" => 0,
@@ -38,7 +38,7 @@ my %WriteMakefileArgs = (
     "version" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.004",
+  "VERSION" => "0.005",
   "test" => {
     "TESTS" => "t/*.t"
   }

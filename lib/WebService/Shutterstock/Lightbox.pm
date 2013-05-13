@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Lightbox;
 {
-  $WebService::Shutterstock::Lightbox::VERSION = '0.004';
+  $WebService::Shutterstock::Lightbox::VERSION = '0.005';
 }
 
 # ABSTRACT: Representation of a lightbox in Shutterstock's public API
@@ -11,6 +11,7 @@ use Moo;
 use WebService::Shutterstock::Image;
 use WebService::Shutterstock::DeferredData qw(deferred);
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 deferred(
@@ -89,7 +90,7 @@ WebService::Shutterstock::Lightbox - Representation of a lightbox in Shutterstoc
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 ATTRIBUTES
 

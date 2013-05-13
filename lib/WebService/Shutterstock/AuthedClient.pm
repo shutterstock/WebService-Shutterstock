@@ -1,6 +1,6 @@
 package WebService::Shutterstock::AuthedClient;
 {
-  $WebService::Shutterstock::AuthedClient::VERSION = '0.004';
+  $WebService::Shutterstock::AuthedClient::VERSION = '0.005';
 }
 
 # ABSTRACT: Role comprising a REST client with the necessary auth token information
@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use Moo::Role;
 
+use WebService::Shutterstock::HasClient;
 with 'WebService::Shutterstock::HasClient';
 
 
@@ -45,7 +46,7 @@ WebService::Shutterstock::AuthedClient - Role comprising a REST client with the 
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 DESCRIPTION
 

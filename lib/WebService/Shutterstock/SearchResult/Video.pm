@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResult::Video;
 {
-  $WebService::Shutterstock::SearchResult::Video::VERSION = '0.004';
+  $WebService::Shutterstock::SearchResult::Video::VERSION = '0.005';
 }
 
 # ABSTRACT: Class representing a single video search result from the Shutterstock API
@@ -8,6 +8,9 @@ package WebService::Shutterstock::SearchResult::Video;
 use strict;
 use warnings;
 use Moo;
+
+use WebService::Shutterstock::HasClient;
+use WebService::Shutterstock::SearchResult::Item;
 
 with 'WebService::Shutterstock::HasClient', 'WebService::Shutterstock::SearchResult::Item';
 
@@ -51,7 +54,7 @@ WebService::Shutterstock::SearchResult::Video - Class representing a single vide
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 

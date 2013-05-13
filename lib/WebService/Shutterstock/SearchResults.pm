@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResults;
 {
-  $WebService::Shutterstock::SearchResults::VERSION = '0.004';
+  $WebService::Shutterstock::SearchResults::VERSION = '0.005';
 }
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
@@ -11,6 +11,7 @@ use Moo;
 use WebService::Shutterstock::SearchResult::Image;
 use WebService::Shutterstock::SearchResult::Video;
 
+use WebService::Shutterstock::HasClient;
 with 'WebService::Shutterstock::HasClient';
 
 sub BUILD { shift->_results_data } # eagar loading
@@ -109,7 +110,7 @@ WebService::Shutterstock::SearchResults - Class representing a single page of se
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 

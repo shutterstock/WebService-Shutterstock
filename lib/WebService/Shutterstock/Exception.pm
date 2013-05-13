@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Exception;
 {
-  $WebService::Shutterstock::Exception::VERSION = '0.004';
+  $WebService::Shutterstock::Exception::VERSION = '0.005';
 }
 
 # ABSTRACT: Exception object to allow for easy error handling on HTTP errors
@@ -58,7 +58,7 @@ WebService::Shutterstock::Exception - Exception object to allow for easy error h
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
