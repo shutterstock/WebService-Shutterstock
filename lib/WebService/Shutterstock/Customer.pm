@@ -154,6 +154,7 @@ sub license_image {
 	return WebService::Shutterstock::LicensedImage->new($client->process_response);
 }
 
+
 sub license_video {
 	my $self     = shift;
 	my %args     = @_;
@@ -473,6 +474,8 @@ using the C<metadata> parameter.  For instance:
 If the image requires an acknowledgment that it will only be used in an
 editorial context, you must pass the C<editorial_acknowledgement =&gt; 1>
 argument to the method.
+
+=for Pod::Coverage license_video
 
 =head1 AUTHOR
 
