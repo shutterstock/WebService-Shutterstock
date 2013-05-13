@@ -321,6 +321,10 @@ sub license_image {
 	return WebService::Shutterstock::LicensedImage->new($client->process_response);
 }
 
+=for Pod::Coverage license_video
+
+=cut
+
 sub license_video {
 	my $self     = shift;
 	my %args     = @_;
