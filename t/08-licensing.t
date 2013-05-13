@@ -12,13 +12,15 @@ my $customer = WebService::Shutterstock::Customer->new(
 	client        => $client,
 	subscriptions => [
 		WebService::Shutterstock::Subscription->new(
-			auth_info            => { auth_token => 123, username => 'abc' },
+			site            => 'photo_subscription',
+			auth_info            => { auth_token => 124, username => 'abc' },
 			client               => $client,
 			subscription_id      => 1,
 			license              => 'premier',
 			unix_expiration_time => 0
 		),
 		WebService::Shutterstock::Subscription->new(
+			site            => 'photo_subscription',
 			auth_info       => { auth_token => 123, username => 'abc' },
 			client          => $client,
 			subscription_id => 2,
@@ -26,12 +28,22 @@ my $customer = WebService::Shutterstock::Customer->new(
 			unix_expiration_time => time + ( 60 * 60 * 24 * 7 ),
 			sizes => { medium_jpg => { format => 'jpg', name => 'medium' } }
 		),
+		WebService::Shutterstock::Subscription->new(
+			site            => 'video_subscription',
+			auth_info       => { auth_token => 123, username => 'abc' },
+			client          => $client,
+			subscription_id => 3,
+			license         => 'footage_standard',
+			unix_expiration_time => time + ( 60 * 60 * 24 * 7 ),
+			sizes => { lowres_mpeg => { format => 'mpeg', name => 'lowres' } }
+		),
 	]
 );
 
 isa_ok($customer, 'WebService::Shutterstock::Customer');
 
 can_ok $customer, 'license_image';
+can_ok $customer, 'license_video';
 
 {
 	my $guard = Test::MockModule->new('REST::Client');
@@ -100,6 +112,40 @@ can_ok $customer, 'license_image';
 	is $image->download(directory => './'), $desired_dest, 'returns path to file';
 	$desired_dest = undef;
 	is $image->download, 'raw bytes', 'returns raw bytes';
+}
+
+{
+	my $guard = Test::MockModule->new('REST::Client');
+	my $metadata;
+	my $metadata_regex;
+	$guard->mock('GET', sub {
+		my $self = shift;
+		return $self->response(
+			response(200, encode_json({metadata_field_definitions => $metadata, account_id => 1}))
+		);
+	});
+	$guard->mock('POST', sub {
+		my($self, $url, $content) = @_;
+		is $url, q{/subscriptions/3/videos/12345/sizes/lowres.json}, 'correct URL';
+		like $content, qr{auth_token=123}, 'has auth_token';
+		like $content, $metadata_regex, 'has metadata' if $metadata_regex;
+		return $self->response(
+			response(
+				200,
+				'{"download":{"url":"http://download.dev.shutterstock.com/gatekeeper/W3siZSI6MTM1Nzg2NTA2NSwiayI6InZpZGVvLzEyMy9sb3dyZXMubXBnIiwibSI6IjEiLCJkIjoic2h1dHRlcnN0b2NrLW1lZGlhIn0sIklQWEpJSDF6Uk1lU2t5R0FKOHB5V3lvbU0vTSJd/shutterstock_v12345.mpg"}}
+				'
+			)
+		);
+	});
+	eval {
+		$customer->license_video( video_id => 12345, subscription => 2 );
+		ok 0, 'should die';
+		1;
+	} or do {
+		like $@, qr{wrong "site"}, 'has correct error';
+	};
+	my $licensed_video = $customer->license_video( video_id => 12345, subscription => { id => 3 }, metadata => { foobar => 1 } );
+	isa_ok($licensed_video,'WebService::Shutterstock::LicensedVideo');
 }
 
 done_testing;

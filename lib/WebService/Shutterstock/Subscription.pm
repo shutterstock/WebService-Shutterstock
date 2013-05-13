@@ -9,6 +9,7 @@ use JSON qw(encode_json);
 use WebService::Shutterstock::LicensedImage;
 use Carp qw(croak);
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 =attr id
@@ -40,7 +41,7 @@ my @fields = qw(
 	  sizes
 	  site
 	  expiration_time
-	  price_per_download
+		price_per_download
 );
 foreach my $f(@fields){
 	has $f => ( is => 'ro' );
@@ -55,9 +56,11 @@ Returns a list of sizes that can be specified when licensing an image
 
 sub sizes_for_licensing {
 	my $self = shift;
+	my %uniq;
 	return
+	  grep { !$uniq{$_}++ }
 	  map  { $_->{name} }
-	  grep { $_->{name} ne 'supersize' && $_->{format} ne 'tiff' }
+	  grep { $_->{name} ne 'supersize' && (!$_->{format} || $_->{format} ne 'tiff') }
 	  values %{ $self->sizes || {} };
 }
 

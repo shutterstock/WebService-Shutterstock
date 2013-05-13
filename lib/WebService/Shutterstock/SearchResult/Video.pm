@@ -6,6 +6,9 @@ use strict;
 use warnings;
 use Moo;
 
+use WebService::Shutterstock::HasClient;
+use WebService::Shutterstock::SearchResult::Item;
+
 with 'WebService::Shutterstock::HasClient', 'WebService::Shutterstock::SearchResult::Item';
 
 =attr video_id

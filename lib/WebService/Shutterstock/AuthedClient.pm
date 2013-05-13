@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Moo::Role;
 
+use WebService::Shutterstock::HasClient;
 with 'WebService::Shutterstock::HasClient';
 
 =attr auth_info

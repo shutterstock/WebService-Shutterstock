@@ -8,6 +8,7 @@ use Moo;
 use WebService::Shutterstock::SearchResult::Image;
 use WebService::Shutterstock::SearchResult::Video;
 
+use WebService::Shutterstock::HasClient;
 with 'WebService::Shutterstock::HasClient';
 
 sub BUILD { shift->_results_data } # eagar loading

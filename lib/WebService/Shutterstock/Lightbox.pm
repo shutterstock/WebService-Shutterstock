@@ -8,6 +8,7 @@ use Moo;
 use WebService::Shutterstock::Image;
 use WebService::Shutterstock::DeferredData qw(deferred);
 
+use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
 deferred(

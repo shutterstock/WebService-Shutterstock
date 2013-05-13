@@ -8,6 +8,7 @@ use warnings;
 use Moo;
 use WebService::Shutterstock::DeferredData qw(deferred);
 
+use WebService::Shutterstock::HasClient;
 with 'WebService::Shutterstock::HasClient';
 
 =attr id
