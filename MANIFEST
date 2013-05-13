@@ -6,7 +6,6 @@ META.yml
 Makefile.PL
 README
 README.mkdn
-bill-items.pl
 dist.ini
 examples/download.pl
 examples/history.pl
