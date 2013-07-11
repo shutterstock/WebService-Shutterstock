@@ -1,6 +1,7 @@
 Revision history for WebService-Shutterstock
 
 {{$NEXT}}
+  - don't override the "new" constructor that's provided by Moo (use BUILD instead) courtesy of arodland
 
 0.005     2013-05-13 09:49:50 CST6CDT
 	- support for licensing/downloading videos

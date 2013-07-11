@@ -111,6 +111,10 @@ sub process_response {
 	}
 }
 
+=for Pod::Coverage BUILD
+
+=cut
+
 sub BUILD {
 	my $self = shift;
 	if($ENV{SS_API_DEBUG}){
