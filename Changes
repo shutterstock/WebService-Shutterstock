@@ -1,6 +1,8 @@
 Revision history for WebService-Shutterstock
 
 {{$NEXT}}
+
+0.005     2013-05-13 09:49:50 CST6CDT
 	- support for licensing/downloading videos
 
 0.004     2013-01-10 20:29:56 CST6CDT
