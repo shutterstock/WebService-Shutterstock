@@ -111,13 +111,12 @@ sub process_response {
 	}
 }
 
-sub new {
-	my $self = shift->SUPER::new(@_);
+sub BUILD {
+	my $self = shift;
 	if($ENV{SS_API_DEBUG}){
 		$self->getUseragent->add_handler("request_send",  sub { shift->dump(prefix => '> '); return });
 		$self->getUseragent->add_handler("response_done", sub { shift->dump(prefix => '< '); return });
 	}
-	return $self;
 }
 
 1;
