@@ -102,6 +102,7 @@ sub process_response {
 	}
 }
 
+
 sub BUILD {
 	my $self = shift;
 	if($ENV{SS_API_DEBUG}){
@@ -142,6 +143,8 @@ Returns most recent response object.
 Processes the most recent response object based on the HTTP status code,
 the content type and response body.  Additional handlers may be passed in
 (keyed on HTTP status codes).
+
+=for Pod::Coverage BUILD
 
 =head1 AUTHOR
 
