@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Customer;
 {
-  $WebService::Shutterstock::Customer::VERSION = '0.005';
+  $WebService::Shutterstock::Customer::VERSION = '0.006';
 }
 
 # ABSTRACT: Class allowing API operations in the context of a specific customer
@@ -278,7 +278,7 @@ WebService::Shutterstock::Customer - Class allowing API operations in the contex
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

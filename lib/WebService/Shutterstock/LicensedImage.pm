@@ -1,6 +1,6 @@
 package WebService::Shutterstock::LicensedImage;
 {
-  $WebService::Shutterstock::LicensedImage::VERSION = '0.005';
+  $WebService::Shutterstock::LicensedImage::VERSION = '0.006';
 }
 
 # ABSTRACT: Allows for interogating and saving a licensed image from the Shutterstock API
@@ -38,7 +38,7 @@ WebService::Shutterstock::LicensedImage - Allows for interogating and saving a l
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

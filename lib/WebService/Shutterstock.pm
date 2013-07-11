@@ -1,6 +1,6 @@
 package WebService::Shutterstock;
 {
-  $WebService::Shutterstock::VERSION = '0.005';
+  $WebService::Shutterstock::VERSION = '0.006';
 }
 
 # ABSTRACT: Easy access to Shutterstock's public API
@@ -126,7 +126,7 @@ WebService::Shutterstock - Easy access to Shutterstock's public API
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

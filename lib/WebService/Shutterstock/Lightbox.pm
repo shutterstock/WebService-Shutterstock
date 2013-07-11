@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Lightbox;
 {
-  $WebService::Shutterstock::Lightbox::VERSION = '0.005';
+  $WebService::Shutterstock::Lightbox::VERSION = '0.006';
 }
 
 # ABSTRACT: Representation of a lightbox in Shutterstock's public API
@@ -90,7 +90,7 @@ WebService::Shutterstock::Lightbox - Representation of a lightbox in Shutterstoc
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 ATTRIBUTES
 

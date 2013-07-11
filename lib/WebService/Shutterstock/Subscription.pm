@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Subscription;
 {
-  $WebService::Shutterstock::Subscription::VERSION = '0.005';
+  $WebService::Shutterstock::Subscription::VERSION = '0.006';
 }
 
 # ABSTRACT: Class representing a subscription for a specific Shutterstock customer
@@ -65,7 +65,7 @@ WebService::Shutterstock::Subscription - Class representing a subscription for a
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 ATTRIBUTES
 

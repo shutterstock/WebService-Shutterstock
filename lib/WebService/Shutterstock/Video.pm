@@ -1,6 +1,6 @@
 package WebService::Shutterstock::Video;
 {
-  $WebService::Shutterstock::Video::VERSION = '0.005';
+  $WebService::Shutterstock::Video::VERSION = '0.006';
 }
 
 # ABSTRACT: Represent the set of information about a Shutterstock video as returned by the API
@@ -62,7 +62,7 @@ WebService::Shutterstock::Video - Represent the set of information about a Shutt
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

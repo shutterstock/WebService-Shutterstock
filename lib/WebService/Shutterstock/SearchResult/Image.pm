@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResult::Image;
 {
-  $WebService::Shutterstock::SearchResult::Image::VERSION = '0.005';
+  $WebService::Shutterstock::SearchResult::Image::VERSION = '0.006';
 }
 
 # ABSTRACT: Class representing a single image search result from the Shutterstock API
@@ -39,7 +39,7 @@ WebService::Shutterstock::SearchResult::Image - Class representing a single imag
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

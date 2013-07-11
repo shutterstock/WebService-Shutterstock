@@ -1,6 +1,6 @@
 package WebService::Shutterstock::SearchResults;
 {
-  $WebService::Shutterstock::SearchResults::VERSION = '0.005';
+  $WebService::Shutterstock::SearchResults::VERSION = '0.006';
 }
 
 # ABSTRACT: Class representing a single page of search results from the Shutterstock API
@@ -110,7 +110,7 @@ WebService::Shutterstock::SearchResults - Class representing a single page of se
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 

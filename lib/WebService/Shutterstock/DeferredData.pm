@@ -1,6 +1,6 @@
 package WebService::Shutterstock::DeferredData;
 {
-  $WebService::Shutterstock::DeferredData::VERSION = '0.005';
+  $WebService::Shutterstock::DeferredData::VERSION = '0.006';
 }
 
 # ABSTRACT: Utility class for easy lazy-loading from the API
@@ -78,7 +78,7 @@ WebService::Shutterstock::DeferredData - Utility class for easy lazy-loading fro
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 DESCRIPTION
 

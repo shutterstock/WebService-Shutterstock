@@ -1,6 +1,6 @@
 package WebService::Shutterstock::LicensedVideo;
 {
-  $WebService::Shutterstock::LicensedVideo::VERSION = '0.005';
+  $WebService::Shutterstock::LicensedVideo::VERSION = '0.006';
 }
 
 # ABSTRACT: Allows for interogating and saving a licensed video from the Shutterstock API
@@ -38,7 +38,7 @@ WebService::Shutterstock::LicensedVideo - Allows for interogating and saving a l
 
 =head1 VERSION
 
-version 0.005
+version 0.006
 
 =head1 SYNOPSIS
 
