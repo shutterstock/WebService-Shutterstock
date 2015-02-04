@@ -11,17 +11,6 @@ use WebService::Shutterstock::DeferredData qw(deferred);
 use WebService::Shutterstock::AuthedClient;
 with 'WebService::Shutterstock::AuthedClient';
 
-deferred(
-	['lightbox_name' => 'name', 'rw'],
-	['images' => '_images', 'ro'],
-	sub {
-		my $self = shift;
-		my $client = $self->client;
-		$client->GET( sprintf('/lightboxes/%s/extended.json', $self->id), $self->with_auth_params );
-		return $client->process_response;
-	}
-);
-
 =attr id
 
 The ID of this lightbox
@@ -38,6 +27,17 @@ Returns a URL for access this lightbox without authenticating.
 
 has id => ( is => 'rw', init_arg => 'lightbox_id' );
 has public_url => ( is => 'lazy' );
+
+deferred(
+	['lightbox_name' => 'name', 'rw'],
+	['images' => '_images', 'ro'],
+	sub {
+		my $self = shift;
+		my $client = $self->client;
+		$client->GET( sprintf('/lightboxes/%s/extended.json', $self->id), $self->with_auth_params );
+		return $client->process_response;
+	}
+);
 
 sub _build_public_url {
 	my $self = shift;
