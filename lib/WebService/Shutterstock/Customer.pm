@@ -282,7 +282,7 @@ version 0.006
 
 =head1 SYNOPSIS
 
-	my $customer = $shutterstock->auth("my-user" => "my-password");
+	my $customer = $shutterstock->auth(username => "my-user", password => "my-password");
 
 	# retrieve list of lightboxes
 	my $lightboxes = $customer->ligthboxes;
